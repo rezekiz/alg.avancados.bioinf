@@ -30,5 +30,3 @@ Forma fácil:
 1. Aceder ao repositório no GitHub
 2. Clicar em "Brances"
 3. Selecionar o branch que se pretende fazer pull e sugerir um pull request
-
-No terminal:
