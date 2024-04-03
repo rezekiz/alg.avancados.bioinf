@@ -1,6 +1,6 @@
 # Algoritmos Avançados em Bioinformática
 
-Repositório para o Grupo 3 da UC de Algoritmos Avançados em Bioinformática
+Repositório para o Grupo 4 da UC de Algoritmos Avançados em Bioinformática
 
 Grupo composto por:
 
