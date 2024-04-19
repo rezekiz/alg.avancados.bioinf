@@ -1,18 +1,18 @@
-from random import randint, choice
-from utils.auxiliares import GibbsSamplerFunctions
+from .auxil.auxiliares import *
 
-def GibbsSampler(seqs, tam_motif, iter, threshold):
+
+def gibbs_sampling(seqs, tam_motif, iter, threshold):
     '''
     Executa o algoritmo de amostragem de Gibbs para encontrar motifs.
 
     Retorna:
     - List: lista de melhores motifs encontrados
     '''
-    aux = GibbsSamplerFunctions()
 
     i_zero = iter
     # Garantir que todas as sequências têm o mesmo tamanho
     assert all(len(seq) == len(seqs[0]) for seq in seqs)
+    assert len(seqs[0]) > tam_motif
 
     # Inicialização das variáveis-resultado
     best_so_far = -1
@@ -24,16 +24,16 @@ def GibbsSampler(seqs, tam_motif, iter, threshold):
     # Iniciamos o loop de iterações em função do número indicado ou do threshold
     while iter > 0 and best_so_far <= threshold:
         # Escolhemos uma sequência aleatória
-        indice, escolhida = aux.escolhe_seq(seqs)
+        indice, escolhida = escolhe_seq(seqs)
 
         # Determinamos snips e offsets para as restantes
-        offsets, snips = aux.gerar_snips(seqs, tam_motif, offset_max, indice, escolhida)
+        offsets, snips = gerar_snips(seqs, tam_motif, offset_max, indice, escolhida)
 
         # Geramos a matriz PWM
-        P = aux.pwm(snips)
+        P = pwm(snips)
 
         # Vemos a posição p com maior probabilidade e respetivo offset
-        best_p, best_o = aux.best_pos(snips, offsets, P)
+        best_p, best_o = best_pos(snips, offsets, P)
 
         # Comparamos com o "best so far" e atualizamos
         if best_p > best_so_far:
