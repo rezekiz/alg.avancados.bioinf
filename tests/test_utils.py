@@ -1,6 +1,8 @@
 import unittest
 from utils import pwm
 
+# TODO testar gerador_seqs
+
 class TestarUtils(unittest.TestCase):
 
     def test_pwm(self):
