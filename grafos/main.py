@@ -18,7 +18,6 @@ def display(graph):
         dot.node(str(key))
         for dest in graph[key]:
             dot.edge(str(key), str(dest))
-    dot.view()
     return dot
 
 class Graph():
