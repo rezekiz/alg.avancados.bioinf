@@ -230,18 +230,13 @@ class Graph:
 
     def traverse_bfs(self,node):
 
-        # TODO corrigir para grafos circulares, está neste momento a ignorar possíveis reachables se o nó original estiver nos visited
-
-        destinations = self.get_successors(node)
-        visited = set(node)
+        destinations = [(node,None)]
+        visited = set()
         reachables = []
 
         while destinations:
 
-            current = destinations.pop(0)
-
-            if current in visited:
-                continue
+            current, parent = destinations.pop(0)
 
             visited.add(current)
             
@@ -251,10 +246,46 @@ class Graph:
 
             for successor in self.get_successors(current):
                 if successor not in visited:
-                    destinations.append(successor)
+                    destinations.append((successor, current))
+                
+                elif successor != parent:
+                    if successor not in reachables:
+                        reachables.append(successor)
             
-        return reachables
+        return {'reachables' : reachables, 'visited' : visited}
 
+    def dist_bfs(self,start,end):
+
+        if end in self.traverse_bfs(start)['visited']:
+
+            destinations = self.get_successors(start)
+
+            visited = set()
+
+            distance = 0
+
+            while end not in visited:
+
+                current = destinations.pop(0)
+
+                visited.add(current)
+
+                if not self.get_successors(current):
+                    continue
+
+                for successor in self.get_successors(current):
+                    if successor not in visited:
+                        destinations.append(successor)
+                        distance += 1
+
+        else: 
+            print(f'{end} is not reachable through {start}')
+            return -1
+        
+        return distance
+
+    # TODO estudar abordagens do shortest path 
+    # Provavelmente usando matrizes de distancias ao estilo needleman? A que tiver o número menor tem o melhor score e é a escolhida?
 
     def traverse_dfs(self,node):
         pass
