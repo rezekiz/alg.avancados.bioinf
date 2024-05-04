@@ -40,16 +40,26 @@ class Graph:
         Args:
             node (str): The node to be added.
         """
+        assert isinstance(node, str),"Node must be in string format"
+
         if node not in self.g:
             self.g[node] = []
 
     def add_edges(self, edges: List[str]) -> None:
+        # TODO implementar possibilidade de descrever edges como "1 -> 2 -> 2 -> .. n"
         """
         Adds edges to the graph.
 
         Args:
             edges (list of str): List of edges to be added in the format "Origin -> Destination".
         """
+        assert isinstance(edges, (str, list)), 'Edges must be in list or string format'
+
+        if type(edges) is str:
+            edges = [edges]
+
+        assert all(isinstance(edge, str) for edge in edges), 'All elements in the list must be strings'
+
         for edge in edges:
             edge = edge.replace(' ', '')
             origin, destinations = edge.split('->')
@@ -58,6 +68,10 @@ class Graph:
                 self.add_node(origin)
 
             for destination in destinations.split(','):
+                
+                if not destination.strip():
+                    continue
+
                 if destination not in self.g.keys():
                     self.add_node(destination)
 
@@ -103,6 +117,8 @@ class Graph:
         Args:
             node (str): The node to be removed.
         """
+        assert isinstance(node, str),"Node must be in string format"
+
         if node not in self.g.keys():
             print('Node does not exist.')
 
@@ -118,6 +134,13 @@ class Graph:
         Args:
             edges (list of str): List of edges to be removed in the format "Origin -> Destination".
         """
+        assert isinstance(edges, (str, list)), 'Edges must be in list or string format'
+
+        if type(edges) is str:
+            edges = [edges]
+
+        assert all(isinstance(edge, str) for edge in edges), 'All elements in the list must be strings'
+
         for edge in edges:
             edge = edge.replace(' ', '')
             origin, destinations = edge.split('->')
@@ -200,3 +223,38 @@ class Graph:
         )
 
         return matrix
+    
+    """
+    Section with methods for traversing the graphs
+    """
+
+    def traverse_bfs(self,node):
+
+        # TODO corrigir para grafos circulares, está neste momento a ignorar possíveis reachables se o nó original estiver nos visited
+
+        destinations = self.get_successors(node)
+        visited = set(node)
+        reachables = []
+
+        while destinations:
+
+            current = destinations.pop(0)
+
+            if current in visited:
+                continue
+
+            visited.add(current)
+            
+            if not self.get_successors(current):
+                reachables.append(current)
+                continue
+
+            for successor in self.get_successors(current):
+                if successor not in visited:
+                    destinations.append(successor)
+            
+        return reachables
+
+
+    def traverse_dfs(self,node):
+        pass
