@@ -78,7 +78,7 @@ class Graph:
                 if destination not in self.g[origin]:
                     self.g[origin].append(destination)
 
-    def show(self, txt: bool = False, gviz: bool = True) -> graphviz.Digraph:
+    def show(self, txt: bool = True, gviz: bool = True) -> graphviz.Digraph:
         """
         Displays the graph.
 
@@ -289,3 +289,4 @@ class Graph:
 
     def traverse_dfs(self,node):
         pass
+
