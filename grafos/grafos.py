@@ -78,7 +78,7 @@ class Graph:
                 if destination not in self.g[origin]:
                     self.g[origin].append(destination)
 
-    def show(self, txt: bool = True, gviz: bool = True) -> graphviz.Digraph:
+    def show(self, txt: bool = False, gviz: bool = True) -> graphviz.Digraph:
         """
         Displays the graph.
 
@@ -228,65 +228,187 @@ class Graph:
     Section with methods for traversing the graphs
     """
 
-    def traverse_bfs(self,node):
+    def traverse_bfs(self, node):
+        """
+        Performs a Breadth-First Search (BFS) traversal on the graph starting from a given node.
 
-        destinations = [(node,None)]
-        visited = set()
-        reachables = []
+        This function explores all of the neighbor nodes at the current level before moving on to the
+        nodes at the next level. It utilizes a queue data structure to maintain the order of exploration.
+
+        Args:
+            node: The starting node for the traversal.
+
+        Returns:
+            A list containing all reachable nodes from the starting node in the order they were visited.
+        """
+
+        destinations = [(node, None)]  # Queue for BFS traversal - (current node, parent)
+        visited = set()  # Set to keep track of visited nodes
+        reachables = []  # List to store reachable nodes
 
         while destinations:
-
             current, parent = destinations.pop(0)
-
             visited.add(current)
-            
-            if not self.get_successors(current):
+
+            # If the current node has no successors and hasn't been added to reachables yet, add it.
+            if not self.get_successors(current) and current not in reachables:
                 reachables.append(current)
                 continue
 
             for successor in self.get_successors(current):
+                # Explore unvisited neighbors
                 if successor not in visited:
-                    destinations.append((successor, current))
-                
+                    destinations.append((successor, current))  # Add neighbor and parent to queue
+
+                # If the neighbor has already been visited but isn't the parent, add it to reachables if not already there.
+                # This ensures all connected components are explored.
                 elif successor != parent:
                     if successor not in reachables:
                         reachables.append(successor)
-            
-        return {'reachables' : reachables, 'visited' : visited}
 
-    def dist_bfs(self,start,end):
-
-        if end in self.traverse_bfs(start)['visited']:
-
-            destinations = self.get_successors(start)
-
-            visited = set()
-
-            distance = 0
-
-            while end not in visited:
-
-                current = destinations.pop(0)
-
-                visited.add(current)
-
-                if not self.get_successors(current):
-                    continue
-
-                for successor in self.get_successors(current):
-                    if successor not in visited:
-                        destinations.append(successor)
-                        distance += 1
-
-        else: 
-            print(f'{end} is not reachable through {start}')
-            return -1
-        
-        return distance
+        return reachables
 
     # TODO estudar abordagens do shortest path 
     # Provavelmente usando matrizes de distancias ao estilo needleman? A que tiver o número menor tem o melhor score e é a escolhida?
 
-    def traverse_dfs(self,node):
+    def traverse_dfs(self, node, visited=None):
+        """
+        Performs a Depth-First Search (DFS) traversal on the graph starting from a given node.
+
+        This function recursively explores each branch as deeply as possible before backtracking.
+
+        Args:
+            node: The starting node for the traversal.
+            visited (optional): A set to keep track of visited nodes (used internally for recursion).
+
+        Returns:
+            A list containing all reachable nodes from the starting node in the order they were visited.
+
+        Credits:
+            Base code authored by Neelam Yadav for understanding recursive implementation:
+            https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
+
+            Modified to include caching of reachable nodes for efficiency.
+        """
+
+        reachables = []
+
+        if visited is None:
+            visited = set()
+
+        visited.add(node)
+        if self.get_successors(node):
+            for successor in self.get_successors(node):
+                if successor not in visited:
+                    reachables += self.traverse_dfs(successor, visited)  # Recursive call
+        else:
+            reachables.append(node)  # Add leaf node
+
+        return reachables
+    
+    def dist(self, start, end, visited=None):
+        """
+        Compute the shortest distance between two nodes in a graph using depth-first search.
+
+        Args:
+            start: The starting node.
+            end: The target node.
+            visited: A set to keep track of visited nodes. Defaults to None.
+
+        Returns:
+            The shortest distance between the start and end nodes if they are connected,
+            None otherwise.
+        """
+
+        # Initialize visited set if not provided
+        if visited is None:
+            visited = set()
+
+        # Mark the current node as visited
+        visited.add(start)
+
+        # Check if the start node has successors
+        if self.get_successors(start):
+            # Iterate over each successor of the current node
+            for successor in self.get_successors(start):
+                # If the successor is the target node, return 1 (distance from start to end)
+                if successor == end:
+                    return 1
+                    
+                # If the successor has not been visited, recursively calculate the distance
+                if successor not in visited:
+                    distance = self.dist(successor, end, visited)
+                    # If a valid distance is found, return the distance + 1
+                    if distance is not None:
+                        return distance + 1
+
+        # If the end node is not reachable from the start node, return None
+        return None
+
+                    
+    
+    def reach_dist_dfs(self, node, visited=None, distance=0):
+        """
+        Find reachable nodes from a given node and their distances using depth-first search.
+
+        Args:
+            node: The current node.
+            visited: A set to keep track of visited nodes. Defaults to None.
+            distance: The distance from the starting node. Defaults to 0.
+
+        Returns:
+            A list of tuples where each tuple contains a reachable node and its distance from the given node.
+        """
+
+        # Initialize list to store reachable nodes and distances
+        reachables = []
+
+        # Initialize visited set if not provided
+        if visited is None:
+            visited = set()
+
+        # Mark the current node as visited
+        visited.add(node)
+
+        # If the node has no successors, append the node itself with its distance
+        if not self.get_successors(node):
+            reachables.append((node, distance))
+            return reachables
+
+        # If the node has successors
+        for successor in self.get_successors(node):
+            # If the successor has not been visited
+            if successor not in visited:
+                # Recursively call reach_dist_dfs on the successor with updated distance
+                reachables_from_successor = self.reach_dist_dfs(successor, visited, distance + 1)
+                # Extend the list of reachable nodes and distances with those from the successor
+                reachables.extend(reachables_from_successor)
+
+        return reachables
+
+    
+    def shortest_dijkstra_nonweighted(self, start):
+        """
+        BFS-style
+        THIS FUNCTION WILL MIGRATE TO WEIGHTED GRAPHS
+        """
+        distances = {node: float('inf') for node in self.g}
+        distances[start] = 0
+
+        queue = [start]
+
+        while queue:
+
+            current = queue.pop(0)
+
+            for successor in self.get_successors(current):
+
+                if distances[successor] == float('inf'):
+                    distances[successor] = distances[current] + 1
+                    queue.append(successor)
+        
         pass
 
+
+    
+    
