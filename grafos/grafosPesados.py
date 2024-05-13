@@ -86,14 +86,47 @@ class WeightedGraph(Graph):
         
         return dot
     
-    def shortest_dijkstra_nonweighted(self, start):
+    def dijkstra(self, start):
         """
-        
+        Apply Dijkstra's algorithm to find the shortest paths from a starting node to all other nodes in the graph.
+    
+        Args:
+            start: The starting node for the shortest path calculation.
+    
+        Returns:
+            distances: A dictionary where keys are nodes and values are the shortest distances from the start node to each node.
         """
-        pass
-
-"""
-# TODO
-
-- Add Dijkstra
-"""
+        # Initialize distances for all nodes to infinity except the starting node, which is set to 0.
+        distances = {node: float('inf') for node in self.g}
+        distances[start] = 0
+    
+        # Initialize a queue with the starting node and its parent.
+        queue = [(start, None)]
+        visited = set()  # Set to keep track of visited nodes and avoid cycles.
+    
+        # While there are nodes left in the queue:
+        while queue:
+            # Pop the first node and its parent from the queue.
+            current, parent = queue.pop(0)
+    
+            # Keep track of visited nodes to avoid cycles.
+            if current in visited:
+                continue
+    
+            visited.add(current)
+    
+            # For each successor of the current node:
+            for successor in self.get_successors(current):
+                # If the successor is not visited:
+                if successor not in visited:
+                    # Add the successor and current node pair to the queue.
+                    queue.append((successor, current))
+                    
+                    # Update the distance to the successor if a shorter path is found.
+                    edge_weight = self.weights[current, successor]
+                    if distances[successor] == float('inf'):
+                        distances[successor] = distances[current] + edge_weight
+                    elif distances[successor] > distances[current] + edge_weight:
+                        distances[successor] = distances[current] + edge_weight
+    
+        return distances
