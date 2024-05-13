@@ -387,26 +387,21 @@ class Graph:
         return reachables
 
     
-    def shortest_dijkstra_nonweighted(self, start):
+    def has_cycle(self, node):
+          
         """
-        BFS-style
-        THIS FUNCTION WILL MIGRATE TO WEIGHTED GRAPHS
+        Checks if a node traverses back to itself
+
+        Approach: Check if node is reachable from itself. 
+        # TODO update traverse BFS for this
+
         """
-        distances = {node: float('inf') for node in self.g}
-        distances[start] = 0
 
-        queue = [start]
+        if node in self.traverse_bfs(node):
+            return True
+      
+        return False
 
-        while queue:
-
-            current = queue.pop(0)
-
-            for successor in self.get_successors(current):
-
-                if distances[successor] == float('inf'):
-                    distances[successor] = distances[current] + 1
-                    queue.append(successor)
-        
         pass
 
 
