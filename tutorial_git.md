@@ -1,3 +1,4 @@
+
 # Tutorial Git
 
 Recursos web:
@@ -30,3 +31,9 @@ Forma fácil:
 1. Aceder ao repositório no GitHub
 2. Clicar em "Branches"
 3. Selecionar o branch que se pretende fazer pull e sugerir um pull request
+
+### OUTRO RECURSOS 
+
+#### importar módulos para demonstrar, alternativamente usar jupyter notebook?
+
+https://www.geeksforgeeks.org/what-is-__init__-py-file-in-python/
