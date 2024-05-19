@@ -1,6 +1,14 @@
+"""
+Autor: Rui Sousa
+
+Graph subclass that implements weight features to graphs.
+
+"""
+
 from typing import Dict, List
 from . import Graph
 import graphviz
+
 
 class WeightedGraph(Graph):
     """
@@ -34,13 +42,18 @@ class WeightedGraph(Graph):
         node      = str(node)
         neighbour = str(neighbour)
 
-        if type(weight) != str:
-            if not self._is_number(weight):
-                raise TypeError('Weight must be a number')
+        # Handle weight
+        if not self._is_number(weight):
+            raise TypeError('Weight must be a number')
             
-            else:
-                weight = int(weight)
+        else:
+            weight = int(weight)
 
+        if weight < 0: raise ValueError('Weight must be positive.')
+
+        # Add node if not exists
+        if node not in self.g.keys():
+            super().add_node(node)
 
         # Add the edge if it doesn't exist already
         if neighbour not in self.g[node]:
@@ -48,7 +61,7 @@ class WeightedGraph(Graph):
         # Store the weight for the edge
         self.weights[(node, neighbour)] = weight
 
-    def _is_number(s):
+    def _is_number(self, s):
         try:
             float(s)
             return True
@@ -95,13 +108,13 @@ class WeightedGraph(Graph):
 
         # Add weighted edges
         for (node, neighbour), weight in self.weights.items():
-            dot.edge(node,neighbour, label = str(weight))
+            dot.edge(node, neighbour, label=str(weight))
 
         # Add non weighted edges
         for (node, neighbours) in self.g.items():
             for neighbour in neighbours:
                 if (node, neighbour) not in self.weights:
-                    dot.edge(node,neighbour)
+                    dot.edge(node, neighbour)
         
         return dot
     
@@ -113,7 +126,8 @@ class WeightedGraph(Graph):
             start: The starting node for the shortest path calculation.
     
         Returns:
-            distances: A dictionary where keys are nodes and values are the shortest distances from the start node to each node.
+            distances: A dictionary where keys are nodes and values are the shortest distances
+            from the start node to each node.
         """
 
         # Ensure weights is not empty and weights are properly build

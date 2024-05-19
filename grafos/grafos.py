@@ -1,15 +1,15 @@
 """
-Criação de módulo de grafos
-Utilização de graphviz para visualizar
-A testagem tem de considerar a adição de nós, vértices e ligações
-
-
 Autor: Rui Sousa
+
+This is a basic implementation of graphs, with the ability to add/remove nodes/edges, basic traversing and distance
+calculation.
+
 """
 
-from typing import List, Dict
+from typing import Union, List, Dict
 import graphviz
 import pandas as pd
+
 
 class Graph:
     """
@@ -38,19 +38,24 @@ class Graph:
       - Addition and removal of nodes
       - Addition and removal of edges
     """
-    def add_node(self, node: str) -> None:
+
+    def add_node(self, node: Union[str, int]) -> None:
         """
         Adds a node to the graph.
 
         Args:
             node (str): The node to be added.
         """
-        assert isinstance(node, str),"Node must be in string format"
+        if type(node) is not str:
+            if type(node) is list:
+                raise TypeError('Node must be a string or a number.')
+
+            node = str(node)
 
         if node not in self.g:
             self.g[node] = []
 
-    def add_edges(self, edges: List[str]) -> None:
+    def add_edges(self, edges: Union[str, List[str]]) -> None:
         # TODO implementar possibilidade de descrever edges como "1 -> 2 -> 2 -> .. n"
         """
         Adds edges to the graph.
@@ -115,14 +120,14 @@ class Graph:
                 dot.edge(str(key), str(dest))
         return dot
 
-    def rm_node(self, node: str) -> None:
+    def rm_node(self, node: Union[str, int]) -> None:
         """
         Removes a node from the graph.
 
         Args:
             node (str): The node to be removed.
         """
-        assert isinstance(node, str),"Node must be in string format"
+        assert isinstance(node, str), "Node must be in string format"
 
         if node not in self.g.keys():
             print('Node does not exist.')
@@ -132,7 +137,7 @@ class Graph:
                 edge.remove(node)
         del self.g[node]
 
-    def rm_edges(self, edges: List[str]) -> None:
+    def rm_edges(self, edges: Union[str, List[str]]) -> None:
         """
         Removes edges from the graph.
 
@@ -181,11 +186,14 @@ class Graph:
         Returns:
             list of str: List of predecessor nodes.
         """
-        predecessors = []
-        for key, value in self.g.items():
-            if node in value:
-                predecessors.append(key)
-        return predecessors
+        if node in self.g.keys():
+            predecessors = []
+            for key, value in self.g.items():
+                if node in value:
+                    predecessors.append(key)
+            return predecessors
+
+        raise KeyError('Node does not exist.')
 
     def get_adjacents(self, node: str) -> List[str]:
         """
@@ -209,17 +217,17 @@ class Graph:
         Returns:
             pd.DataFrame: The adjacency matrix.
         """
-        matrix = [[] for node in self.g.keys()]
+        matrix = [[] for _ in self.g.keys()]
         nodes = list(self.g.keys())
-        iter = 0
+        cycle = 0
 
         for node in self.g.keys():
             for _ in nodes:
                 if node in self.get_adjacents(_):
-                    matrix[iter].append(1)
+                    matrix[cycle].append(1)
                 else:
-                    matrix[iter].append(0)
-            iter += 1
+                    matrix[cycle].append(0)
+            cycle += 1
 
         matrix = pd.DataFrame(
             matrix,
@@ -265,13 +273,16 @@ class Graph:
                 if successor not in visited:
                     destinations.append((successor, current))  # Add neighbor and parent to queue
 
-                # If the neighbor has already been visited but isn't the parent, add it to reachables if not already there.
+                # If the neighbor has already been visited but isn't the parent,
+                # add it to reachables if not already there.
+
                 # This ensures all connected components are explored.
                 elif successor != parent:
                     if successor not in reachables:
                         reachables.append(successor)
 
         return reachables
+
     def traverse_dfs(self, node, visited=None):
         """
         Performs a Depth-First Search (DFS) traversal on the graph starting from a given node.
@@ -320,8 +331,8 @@ class Graph:
             The shortest distance between the start and end nodes if they are connected,
             None otherwise.
         """
-        assert start in self.g.keys(),f'{start} node does not exist.'
-        assert end in self.g.keys(),f'{end} node does not exist.'
+        assert start in self.g.keys(), f'{start} node does not exist.'
+        assert end in self.g.keys(), f'{end} node does not exist.'
 
         # Initialize visited set if not provided
         if visited is None:
@@ -348,8 +359,6 @@ class Graph:
         # If the end node is not reachable from the start node, return None
         return None
 
-                    
-    
     def reach_dist_dfs(self, node, visited=None, distance=0):
         """
         Find reachable nodes from a given node and their distances using breadth-first search.
@@ -389,7 +398,6 @@ class Graph:
 
         return reachables
 
-    
     def has_cycle(self, node):
           
         """
@@ -404,8 +412,6 @@ class Graph:
             return True
       
         return False
-
-        pass
 
 
     
