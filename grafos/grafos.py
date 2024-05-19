@@ -26,6 +26,11 @@ class Graph:
         if g is None:
             self.g = {}
         else:
+            '''
+            It would be interesting to revise the way this is processed.
+            Initializing with {'1': ['2','3'] , '2' : ['4','5'] would just give 2 nodes.
+            Perhaps adapt _build from weighted graphs?!
+            '''
             self.g = g
 
     """
@@ -195,7 +200,7 @@ class Graph:
         predecessors = self.get_predecessors(node)
         successors = self.get_successors(node)
         adjacents = list(set(predecessors + successors))
-        return adjacents
+        return sorted(adjacents)
 
     def adj_matrix(self) -> pd.DataFrame:
         """
@@ -267,10 +272,6 @@ class Graph:
                         reachables.append(successor)
 
         return reachables
-
-    # TODO estudar abordagens do shortest path 
-    # Provavelmente usando matrizes de distancias ao estilo needleman? A que tiver o número menor tem o melhor score e é a escolhida?
-
     def traverse_dfs(self, node, visited=None):
         """
         Performs a Depth-First Search (DFS) traversal on the graph starting from a given node.
@@ -319,6 +320,8 @@ class Graph:
             The shortest distance between the start and end nodes if they are connected,
             None otherwise.
         """
+        assert start in self.g.keys(),f'{start} node does not exist.'
+        assert end in self.g.keys(),f'{end} node does not exist.'
 
         # Initialize visited set if not provided
         if visited is None:
@@ -349,7 +352,7 @@ class Graph:
     
     def reach_dist_dfs(self, node, visited=None, distance=0):
         """
-        Find reachable nodes from a given node and their distances using depth-first search.
+        Find reachable nodes from a given node and their distances using breadth-first search.
 
         Args:
             node: The current node.
