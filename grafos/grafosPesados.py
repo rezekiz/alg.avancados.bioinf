@@ -30,11 +30,30 @@ class WeightedGraph(Graph):
             neighbour: The target node.
             weight: The weight of the edge.
         """
+        # Convert to string
+        node      = str(node)
+        neighbour = str(neighbour)
+
+        if type(weight) != str:
+            if not self._is_number(weight):
+                raise TypeError('Weight must be a number')
+            
+            else:
+                weight = int(weight)
+
+
         # Add the edge if it doesn't exist already
         if neighbour not in self.g[node]:
             super().add_edges([f'{node} -> {neighbour}'])
         # Store the weight for the edge
         self.weights[(node, neighbour)] = weight
+
+    def _is_number(s):
+        try:
+            float(s)
+            return True
+        except ValueError:
+            return False
 
     def _build(self):
         """
@@ -96,6 +115,11 @@ class WeightedGraph(Graph):
         Returns:
             distances: A dictionary where keys are nodes and values are the shortest distances from the start node to each node.
         """
+
+        # Ensure weights is not empty and weights are properly build
+        if not self.weights:
+            self._build()
+
         # Initialize distances for all nodes to infinity except the starting node, which is set to 0.
         distances = {node: float('inf') for node in self.g}
         distances[start] = 0

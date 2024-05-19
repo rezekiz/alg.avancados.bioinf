@@ -285,13 +285,77 @@ class TestGrafos(unittest.TestCase):
 
 class TestGrafosPesados(unittest.TestCase):
 
-    def testCreateWeightedGraph(self):
-        '''
+    def testAddWeight(self):
 
-        IGNORE THIS ONE
+        g = WeightedGraph()
+        g.add_edges('1->2')
+        # Valid input
+        g.add_weight('1','2',3)
+        self.assertEqual(g.weights,{('1','2') : 3})
 
-        '''
-        pass
+        # Creates a node
+        g.add_weight('1','3',3)
+        self.assertEqual(g.weights, {('1','2') : 3, ('1','3') : 3})
+
+        # Type correction
+        g.add_weight('1',5,'3')
+        self.assertEqual(g.weights, {('1','2') : 3, ('1','3') : 3, ('1' , '5') : 3})
+
+        # Invalid input        
+        with self.assertRaises(TypeError):
+            g.add_weight('1','2','one')
+
+
+    def testBuildR(self):
+
+        g = WeightedGraph()
+
+        g.add_edges(['1 -> 2,3','2 -> 4,5'])
+
+        g.add_weight('4','5',3)
+
+        g._build()
+        
+        self.assertEqual(
+                g.weights,
+                {
+                    ('1' , '2') : 0,
+                    ('1' , '3') : 0,
+                    ('2' , '4') : 0,
+                    ('2' , '5') : 0,
+                    ('4' , '5') : 3
+                }
+                ) 
+        
+    def testDijkstra(self):
+
+        g = WeightedGraph()
+
+        g.add_edges(['1 -> 2,3,4','2 -> 5,6','3 ->6,8','4->8','5->7'])
+
+        # Check if auto-build is working proper
+        self.assertEqual(
+            g.dijkstra('1'),
+            { '1' : 0 , '2' : 0 , '3' : 0 , '4' : 0 , '5' : 0 , '6' : 0 , '7' : 0 , '8' : 0 }
+        )
+
+        g.add_weight('1','2',4)
+        self.assertEqual(
+            g.dijkstra('1'),
+            { '1' : 0 , '2' : 4 , '3' : 0 , '4' : 0 , '5' : 0 , '6' : 0 , '7' : 0 , '8' : 0 }
+        )
+
+        # Invalid node
+        test_nodes = ['@@', 2]
+
+        for _ in test_nodes:
+            with self.assertRaises(KeyError):
+                g.dijkstra(_)
+
+
+
+
+
 
 
 if __name__ == '__main__':
