@@ -1,10 +1,10 @@
+# Classe de individuos
 import random
 
 
-# Classe de individuos
 class Individuos:
 
-    def __init__(self, size: int, fitness=None, lim_sup: int = 1, lim_inf: int = 0, genome=None):
+    def __init__(self, size: int, lim_sup: int = 1, lim_inf: int = 0, genome: object = None) -> object:
         """
             Inicializa um novo objeto da classe individuos.
 
@@ -13,6 +13,7 @@ class Individuos:
                 fitness (float): A aptidão do indivíduo.
                 lim_sup (int): O limite superior do genoma do indivíduo.
                 lim_inf (int): O limite inferior do genoma do indivíduo.
+                genome (list): O genoma do indivíduo.
 
             Opcional:
                 genome (list): O genoma do indivíduo. Se o genoma for vazio inicializa com valores aleatórios.
@@ -23,7 +24,6 @@ class Individuos:
 
         self.size = size
         self.genome = genome
-        self.fitness = fitness
         self.lim_sup = lim_sup
         self.lim_inf = lim_inf
 
@@ -70,27 +70,74 @@ class Individuos:
 
         pass
 
-    # Crossover em vários pontos
-    def crossover(self, indiv2):
+    # Crossover num único ponto
+    def crossover(self, other):
         """
-            Realiza o crossover entre dois indivíduos.
+            Realiza crossover entre o indivíduo atual (self) e outro indivíduo para gerar dois novos indivíduos.
 
             Parâmetros:
-                indiv2 (Individuos): O segundo indivíduo.
+                other (Individuos): O outro indivíduo.
 
             Retorno:
-                Individuos: O novo indivíduo.
+                (Individuos, Individuos): Dois novos indivíduos resultantes do crossover.
+        """
+        if self.size != other.size:
+            raise ValueError("Os indivíduos devem ter tamanhos de genoma iguais para realizar o crossover.")
+
+        crossover_point = random.randint(1, self.size - 1)
+
+        new_genome1 = self.genome[:crossover_point] + other.genome[crossover_point:]
+        new_genome2 = other.genome[:crossover_point] + self.genome[crossover_point:]
+
+        return Individuos(size=self.size, genome=new_genome1), Individuos(size=other.size, genome=new_genome2)
+
+        pass
+
+    def crossover_multi(self, other, num_points):
+        """
+            Realiza crossover entre o indivíduo atual (self) e outro indivíduo para gerar dois novos indivíduos.
+
+            Parâmetros:
+                other (Individuos): O outro indivíduo.
+                num_points (int): O número de pontos de crossover.
+
+            Retorno:
+                (Individuos, Individuos): Dois novos indivíduos resultantes do crossover.
+        """
+        if self.size != other.size:
+            raise ValueError("Os indivíduos devem ter tamanhos de genoma iguais para realizar o crossover.")
+        if num_points >= self.size - 1:
+            raise ValueError("O número de pontos de crossover deve ser menor que o tamanho do genoma - 1.")
+
+        # Seleciona pontos de crossover aleatórios
+        crossover_points = sorted(random.sample(range(1, self.size), num_points))
+
+        # Realiza o crossover nos pontos selecionados
+        new_genome1 = []
+        new_genome2 = []
+        current_parent = self
+        for i in range(self.size):
+            if i in crossover_points:
+                # Troca o pai atual
+                current_parent = other if current_parent is self else self
+            new_genome1.append(current_parent.genome[i])
+            new_genome2.append(other.genome[i])
+
+        return Individuos(size=self.size, genome=new_genome1), Individuos(size=other.size, genome=new_genome2)
+
+        pass
+
+    def get_fitness(self):
+        """
+            Retorna a aptidão do indivíduo.
+
+            Parâmetros:
+                None
+
+            Retorno:
+                int: A aptidão do indivíduo.
         """
 
-        novo_indiv = Individuos(self.size, 0, self.lim_sup, self.lim_inf)
-
-        # Crossover entre genomas
-        for i in range(self.size):
-            if random.randint(0, 1) == 1:
-                novo_indiv.genome.append(self.genome[i])
-            else:
-                novo_indiv.genome.append(indiv2.genome[i])
-
-        return novo_indiv
+        return sum(self.genome)
 
     pass
