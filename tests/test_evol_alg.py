@@ -13,7 +13,7 @@ Funcionalidades chave de algoritmos evolucionários:
 """
 
 import unittest
-from algoritmos_evolucionarios import algoritmos_evolucionarios
+from algoritmos_evolucionarios import Ind
 from unittest.mock import patch
 
 class TestEvolAlgo(unittest.TestCase):

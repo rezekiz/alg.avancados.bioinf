@@ -46,40 +46,51 @@ class Individuos:
         for i in range(size):
             self.genome.append(random.randint(self.lim_inf, self.lim_sup))
 
-    pass
-
-
-# Classe população
-
-class Populacao:
-
-    def __init__(self, pop_size: int, indiv_size: int, indivs: int):
-        """
-            Inicializa um novo objeto da classe populacao.
-
-            Parâmetros:
-                pop_size (int): O número de indivíduos na população.
-                indiv_size (int): O tamanho do genoma de cada indivíduo.
-                indivs (list): A lista de indivíduos. Se a lista for vazia inicializa com valores aleatórios.
-
-        """
-
-        self.pop_size = pop_size
-        self.indiv_size = indiv_size
-
-        # Caso indivs seja vazio inicializa com valores aleatórios
-        if indivs:
-            self.indivs = indivs
-        else:
-            self.init_aleat_pop()
         pass
 
-    # Inicialização aleatória da população
-    def init_aleat_pop(self):
+    # Inicialização de operador de mutação que altera um único gene
+    def mutation(self):
+        """
+            Altera um gene aleatório do genoma do indivíduo.
 
-        self.indivs = []
+            Parâmetros:
+                None
 
-        for i in range(self.pop_size):
-            self.indivs.append(Individuos(self.indiv_size))
+            Retorno:
+                None
+        """
+
+        tamanho = len(self.genome)
+        pos_gene = random.randint(0, tamanho - 1)
+
+        if self.genome[pos_gene] != 0:
+            self.genome[pos_gene] = 0
+        else:
+            self.genome[pos_gene] = 1
+
+        pass
+
+    # Crossover em vários pontos
+    def crossover(self, indiv2):
+        """
+            Realiza o crossover entre dois indivíduos.
+
+            Parâmetros:
+                indiv2 (Individuos): O segundo indivíduo.
+
+            Retorno:
+                Individuos: O novo indivíduo.
+        """
+
+        novo_indiv = Individuos(self.size, 0, self.lim_sup, self.lim_inf)
+
+        # Crossover entre genomas
+        for i in range(self.size):
+            if random.randint(0, 1) == 1:
+                novo_indiv.genome.append(self.genome[i])
+            else:
+                novo_indiv.genome.append(indiv2.genome[i])
+
+        return novo_indiv
 
     pass
