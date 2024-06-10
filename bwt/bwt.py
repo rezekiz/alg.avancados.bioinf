@@ -1,4 +1,4 @@
-def bwt_transf(seq):
+def bwt_transf(seq : str) -> str:
     """
     -Realiza a transformação de Burrows-Wheeler em uma sequência dada.
 
@@ -19,11 +19,11 @@ def bwt_transf(seq):
 
     # Concatena os últimos caracteres de cada rotação para formar a BWT
     bwt = ''.join(rotation[-1] for rotation in rotations)
-
     # Retorna a BWT e o índice original da sequência na lista de rotações
+
     return bwt, rotations.index(seq)
 
-def bwt_reverse(bwt):
+def bwt_reverse(bwt : str) -> str:
     """
     -Reverte a transformação de Burrows-Wheeler em uma sequência original.
     
@@ -43,4 +43,5 @@ def bwt_reverse(bwt):
         table.sort()
 
     # Retorna a sequência original encontrada na tabela na posição do caractere de terminação '$'
-    return table[bwt.index('$')]
+
+    return table[bwt.index('$')][:-1]

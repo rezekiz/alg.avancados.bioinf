@@ -1,1 +1,1 @@
-from .gibbs_sampling import gibbs_sampling
+from .gibbs_sampling import *

@@ -1,5 +1,11 @@
+# Add parent dir to path to ensure module is found
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import unittest
 
+from boyer_moore.BoyerMoore import BoyerMoore
 
 class TestBoyerMoore(unittest.TestCase):
 
@@ -31,4 +37,4 @@ class TestBoyerMoore(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(verbosity=2)
