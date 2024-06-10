@@ -39,10 +39,16 @@ This test suite covers some of the essential aspects of graph functions. It coul
 extreme and edge cases.
 
 """
-
-
 import unittest
-from grafos import Graph, WeightedGraph
+
+# Add parent dir to path to ensure module is found
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Import modules
+from grafos import Graph
+from grafos.grafosPesados import WeightedGraph
 
 
 class TestGrafos(unittest.TestCase):

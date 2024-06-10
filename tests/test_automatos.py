@@ -1,8 +1,15 @@
+# Add parent dir to path to ensure module is found
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import unittest
+
+from automatos_finitos.Automatos_Finitos import *
 
 class TestDNASequenceAutomaton(unittest.TestCase):
     def setUp(self):
-        self.dna_automaton = DNASequenceAutomaton()
+        self.dna_automaton = Automato()
 
     def test_accept_valid_sequence(self):
         dna_sequence = "AGTATGCGATGTTAAGCG"

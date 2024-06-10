@@ -11,9 +11,15 @@ Funcionalidades chave de algoritmos evolucionários:
 * determinar nova população a partir da população anterior e novas soluções
 
 """
+# Add parent dir to path to ensure module is found
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import unittest
-from algoritmos_evolucionarios import Ind
+from algoritmos_evolucionarios.AlgEvol import *
+from algoritmos_evolucionarios.Ind import *
+from algoritmos_evolucionarios.Pop import *
 from unittest.mock import patch
 
 class TestEvolAlgo(unittest.TestCase):
