@@ -1,7 +1,11 @@
+"""
+Graphs mode initialization
+"""
+
 from .grafos import(
     Graph
 )
 
-from .grafosPesados import(
+from .grafos_pesados import(
     WeightedGraph
 )

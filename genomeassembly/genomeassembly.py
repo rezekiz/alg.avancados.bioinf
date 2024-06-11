@@ -7,18 +7,12 @@ changes to the workflow, namely:
     - handling multiple hamiltonian paths for future proofing
 """
 
-
-from grafos import Graph
 from typing import List, Dict
+import re
+from grafos import Graph
 
+# Static methods
 
-"""
-=============================
-#                           #
-#       Static Methods      #
-#                           #
-=============================
-"""
 def k_merify(seq: str, k: int = 3) -> List[str]:
     """
     Generates a list of k-mers from a given sequence.
@@ -30,9 +24,8 @@ def k_merify(seq: str, k: int = 3) -> List[str]:
     Returns:
         list: list of k-mers
     """
-    assert k > 0 and k < len(seq)
+    assert 0 < k < len(seq)
     return sorted([seq[i:i+k] for i in range(len(seq)-k+1)])
-
 
 def suffix(seq):
     """
@@ -61,6 +54,9 @@ def prefix(seq):
 
 
 class AssemblyGraph(Graph):
+    """
+    Derived class from Graph that handles genome assembly
+    """
     def __init__(self, frags: List[str]) -> Dict[str, str]:
         """
         Initializes the AssemblyGraph with the given fragments.
@@ -73,20 +69,21 @@ class AssemblyGraph(Graph):
 
     def assemble(self, frags: List[str]):
         """
-        Assembles the graph by adding edges between fragments where the suffix of one fragment matches the prefix of another.
+        Assembles the graph by adding edges between fragments
+        where the suffix of one fragment matches the prefix of another.
 
         Args:
             frags: list of string fragments
         """
-        idA = 1  # Adds a tag in the order of fragment appearance
-        for A in frags:
-            suf = suffix(A)
-            idB = 1
-            for B in frags:
-                if prefix(B) == suf:
-                    self.add_edges(f'{A}-{idA} -> {B}-{idB}')
-                idB += 1
-            idA += 1
+        id_a = 1  # Adds a tag in the order of fragment appearance
+        for a in frags:
+            suf = suffix(a)
+            id_b = 1
+            for b in frags:
+                if prefix(b) == suf:
+                    self.add_edges(f'{a}-{id_a} -> {b}-{id_b}')
+                id_b += 1
+            id_a += 1
 
     def valid_path(self, path: List[str]) -> bool:
         """
@@ -137,16 +134,14 @@ class AssemblyGraph(Graph):
         Returns:
             list: the reconstructed sequence, or None if the path is not Hamiltonian
         """
-        import re
-
         if self.is_hamiltonian(path):
             seq = self._get_seq(path[0])
             for i in range(1, len(path)):
-                next = self._get_seq(path[i])
-                seq += next[-1]
+                _next = self._get_seq(path[i])
+                seq += _next[-1]
             return seq
-        else:
-            return None
+
+        return None
 
     def _get_seq(self, node: str) -> str:
         """
@@ -158,12 +153,10 @@ class AssemblyGraph(Graph):
         Returns:
             str: sequence part of the node string
         """
-        import re
-
         if node not in self.g.keys():
             return None
-        else:
-            return re.match(r"([A-Z]+)-\d+", node).group(1)
+
+        return re.match(r"([A-Z]+)-\d+", node).group(1)
 
     def get_hamiltonian_paths(self) -> List[List[str]]:
         """
@@ -179,8 +172,8 @@ class AssemblyGraph(Graph):
                 res.append(path)
         if len(res) > 1:
             return res
-        else:
-            return res[0]
+
+        return res[0]
 
     def scan_hamiltonian_from_node(self, start: str) -> List[str]:
         """

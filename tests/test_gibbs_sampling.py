@@ -1,16 +1,15 @@
+"""
+Test suite for the gibbs sampling module.
+"""
+import unittest
+from unittest.mock import patch, MagicMock
+
 # Add parent dir to path to ensure module is found
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
-import unittest
-from unittest.mock import patch, MagicMock
-from gibbs_sampling import gibbs_sampling  # Adjust the import to match your module path
-
-import unittest
 from gibbs_sampling import escolhe_seq, gerar_snips, pwm, prob_snip, best_pos, gibbs_sampling
-
 
 class TestYourFunctions(unittest.TestCase):
 
