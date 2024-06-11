@@ -48,7 +48,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import modules
 from grafos import Graph
-from grafos.grafosPesados import WeightedGraph
+from grafos.grafos_pesados import WeightedGraph
 
 
 class TestGrafos(unittest.TestCase):

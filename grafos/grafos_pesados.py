@@ -2,12 +2,12 @@
 Autor: Rui Sousa
 
 Graph subclass that implements weight features to graphs.
-
 """
 
 from typing import Dict, List
-from . import Graph
 import graphviz
+from . import Graph
+
 
 
 class WeightedGraph(Graph):
@@ -39,17 +39,17 @@ class WeightedGraph(Graph):
             weight: The weight of the edge.
         """
         # Convert to string
-        node      = str(node)
+        node = str(node)
         neighbour = str(neighbour)
 
         # Handle weight
         if not self._is_number(weight):
             raise TypeError('Weight must be a number')
-            
-        else:
-            weight = int(weight)
 
-        if weight < 0: raise ValueError('Weight must be positive.')
+        weight = int(weight)
+
+        if weight < 0:
+            raise ValueError('Weight must be positive.')
 
         # Add node if not exists
         if node not in self.g.keys():
@@ -84,7 +84,7 @@ class WeightedGraph(Graph):
         Displays the graph.
 
         Args:
-            txt (bool, optional): If True, prints the graph structure in text format. Defaults to False.
+            txt (bool, optional): If True, prints the graph structure. Defaults to False.
             gviz (bool, optional): If True, displays the graph using Graphviz. Defaults to True.
 
         Returns:
@@ -96,7 +96,7 @@ class WeightedGraph(Graph):
 
         if gviz:
             return self._display()
-        
+
     def _display(self) -> graphviz.Digraph:
         """
         Helper method to display the graph using Graphviz.
@@ -115,12 +115,12 @@ class WeightedGraph(Graph):
             for neighbour in neighbours:
                 if (node, neighbour) not in self.weights:
                     dot.edge(node, neighbour)
-        
+
         return dot
-    
+
     def dijkstra(self, start):
         """
-        Apply Dijkstra's algorithm to find the shortest paths from a starting node to all other nodes in the graph.
+        Find the shortest paths from a starting node to the other nodes.
     
         Args:
             start: The starting node for the shortest path calculation.
@@ -134,37 +134,37 @@ class WeightedGraph(Graph):
         if not self.weights:
             self._build()
 
-        # Initialize distances for all nodes to infinity except the starting node, which is set to 0.
+        # Initialize distances for all nodes to infinity except the starting node (set to 0).
         distances = {node: float('inf') for node in self.g}
         distances[start] = 0
-    
+
         # Initialize a queue with the starting node and its parent.
         queue = [(start, None)]
         visited = set()  # Set to keep track of visited nodes and avoid cycles.
-    
+
         # While there are nodes left in the queue:
         while queue:
             # Pop the first node and its parent from the queue.
             current, parent = queue.pop(0)
-    
+
             # Keep track of visited nodes to avoid cycles.
             if current in visited:
                 continue
-    
+
             visited.add(current)
-    
+
             # For each successor of the current node:
             for successor in self.get_successors(current):
                 # If the successor is not visited:
                 if successor not in visited:
                     # Add the successor and current node pair to the queue.
                     queue.append((successor, current))
-                    
+
                     # Update the distance to the successor if a shorter path is found.
                     edge_weight = self.weights[current, successor]
                     if distances[successor] == float('inf'):
                         distances[successor] = distances[current] + edge_weight
                     elif distances[successor] > distances[current] + edge_weight:
                         distances[successor] = distances[current] + edge_weight
-    
+
         return distances

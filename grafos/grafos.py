@@ -1,8 +1,8 @@
 """
 Autor: Rui Sousa
 
-This is a basic implementation of graphs, with the ability to add/remove nodes/edges, basic traversing and distance
-calculation.
+This is a basic implementation of graphs, with the ability to
+add/remove nodes/edges, basic traversing and distance calculation.
 
 """
 
@@ -26,18 +26,14 @@ class Graph:
         if g is None:
             self.g = {}
         else:
-            '''
-            It would be interesting to revise the way this is processed.
-            Initializing with {'1': ['2','3'] , '2' : ['4','5'] would just give 2 nodes.
-            Perhaps adapt _build from weighted graphs?!
-            '''
+            #It would be interesting to revise the way this is processed.
+            #Initializing with {'1': ['2','3'] , '2' : ['4','5'] would just give 2 nodes.
+            #Perhaps adapt _build from weighted graphs?!
             self.g = g
 
-    """
-    Section with methods and basic operations of graphs:
-      - Addition and removal of nodes
-      - Addition and removal of edges
-    """
+    # Section with methods and basic operations of graphs:
+    #    - Addition and removal of nodes
+    #    - Addition and removal of edges
 
     def add_node(self, node: Union[str, int]) -> None:
         """
@@ -46,8 +42,8 @@ class Graph:
         Args:
             node (str): The node to be added.
         """
-        if type(node) is not str:
-            if type(node) is list:
+        if not isinstance(node, str):
+            if isinstance(node, list):
                 raise TypeError('Node must be a string or a number.')
 
             node = str(node)
@@ -56,7 +52,6 @@ class Graph:
             self.g[node] = []
 
     def add_edges(self, edges: Union[str, List[str]]) -> None:
-        # TODO implementar possibilidade de descrever edges como "1 -> 2 -> 2 -> .. n"
         """
         Adds edges to the graph.
 
@@ -65,10 +60,11 @@ class Graph:
         """
         assert isinstance(edges, (str, list)), 'Edges must be in list or string format'
 
-        if type(edges) is str:
+        if isinstance(edges, str):
             edges = [edges]
 
-        assert all(isinstance(edge, str) for edge in edges), 'All elements in the list must be strings'
+        assert all(isinstance(edge, str) for edge in edges), \
+            'All elements in the list must be strings'
 
         for edge in edges:
             edge = edge.replace(' ', '')
@@ -78,7 +74,6 @@ class Graph:
                 self.add_node(origin)
 
             for destination in destinations.split(','):
-                
                 if not destination.strip():
                     continue
 
@@ -88,12 +83,12 @@ class Graph:
                 if destination not in self.g[origin]:
                     self.g[origin].append(destination)
 
-    def show(self, txt: bool = False, gviz: bool = True) -> graphviz.Digraph:
+    def show(self, txt: bool = False, gviz: bool = True):
         """
         Displays the graph.
 
         Args:
-            txt (bool, optional): If True, prints the graph structure in text format. Defaults to False.
+            txt (bool, optional): If True, prints graph structure in text format. Defaults to False.
             gviz (bool, optional): If True, displays the graph using Graphviz. Defaults to True.
 
         Returns:
@@ -149,10 +144,11 @@ class Graph:
         """
         assert isinstance(edges, (str, list)), 'Edges must be in list or string format'
 
-        if type(edges) is str:
+        if isinstance(edges, str):
             edges = [edges]
 
-        assert all(isinstance(edge, str) for edge in edges), 'All elements in the list must be strings'
+        assert all(isinstance(edge, str) for edge in edges), \
+            'All elements in the list must be strings'
 
         for edge in edges:
             edge = edge.replace(' ', '')
@@ -160,12 +156,12 @@ class Graph:
             for destination in destinations.split(','):
                 self.g[origin].remove(destination)
 
-    """
-    Section with methods for basic graph information:
-      - Finding successors, predecessors, and adjacent nodes
-      - Degree (in/out) of each node
-      - Adjacency matrix
-    """
+
+    # Section with methods for basic graph information:
+    #  - Finding successors, predecessors, and adjacent nodes
+    #  - Degree (in/out) of each node
+    #  - Adjacency matrix
+
 
     def get_successors(self, node: str) -> List[str]:
         """
@@ -234,28 +230,25 @@ class Graph:
 
         matrix = pd.DataFrame(
             matrix,
-            index=[node for node in self.g.keys()],
-            columns=[node for node in self.g.keys()]
+            index=list(self.g.keys()),
+            columns=list(self.g.keys())
         )
-
         return matrix
-    
-    """
-    Section with methods for traversing the graphs
-    """
+
+    # Section with methods for traversing the graphs
 
     def traverse_bfs(self, node):
         """
         Performs a Breadth-First Search (BFS) traversal on the graph starting from a given node.
 
-        This function explores all of the neighbor nodes at the current level before moving on to the
-        nodes at the next level. It utilizes a queue data structure to maintain the order of exploration.
+        This function explores all neighbor nodes at the current level before moving on to the
+        nodes at the next level. Use a queue data structure to maintain order of exploration.
 
         Args:
             node: The starting node for the traversal.
 
         Returns:
-            A list containing all reachable nodes from the starting node in the order they were visited.
+            A list containing all reachable nodes from the starting node by visit order
         """
 
         destinations = [(node, None)]  # Queue for BFS traversal - (current node, parent)
@@ -294,10 +287,10 @@ class Graph:
 
         Args:
             node: The starting node for the traversal.
-            visited (optional): A set to keep track of visited nodes (used internally for recursion).
+            visited (optional): set to keep track of visited nodes (used internally for recursion).
 
         Returns:
-            A list containing all reachable nodes from the starting node in the order they were visited.
+            A list containing all reachable nodes from starting node by order of visit.
 
         Credits:
             Base code authored by Neelam Yadav for understanding recursive implementation:
@@ -318,9 +311,8 @@ class Graph:
                     reachables += self.traverse_dfs(successor, visited)  # Recursive call
         else:
             reachables.append(node)  # Add leaf node
-
         return reachables
-    
+
     def dist(self, start, end, visited=None):
         """
         Compute the shortest distance between two nodes in a graph using depth-first search.
@@ -351,7 +343,7 @@ class Graph:
                 # If the successor is the target node, return 1 (distance from start to end)
                 if successor == end:
                     return 1
-                    
+
                 # If the successor has not been visited, recursively calculate the distance
                 if successor not in visited:
                     distance = self.dist(successor, end, visited)
@@ -372,7 +364,7 @@ class Graph:
             distance: The distance from the starting node. Defaults to 0.
 
         Returns:
-            A list of tuples where each tuple contains a reachable node and its distance from the given node.
+            A list of tuples, each containing a reachable node and its distance from the given node.
         """
 
         # Initialize list to store reachable nodes and distances
@@ -402,20 +394,13 @@ class Graph:
         return reachables
 
     def has_cycle(self, node):
-          
         """
         Checks if a node traverses back to itself
 
-        Approach: Check if node is reachable from itself. 
-        # TODO update traverse BFS for this
-
+        Approach: Check if node is reachable from itself.
         """
 
         if node in self.traverse_bfs(node):
             return True
-      
+
         return False
-
-
-
-    
