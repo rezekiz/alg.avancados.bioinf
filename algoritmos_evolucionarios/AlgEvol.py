@@ -1,3 +1,7 @@
+from Pop import Populacao
+from Ind import Individuos
+
+
 class EvolAlgorithm:
 
     def __init__(self, pop_size, numits, desc, indiv_size):
@@ -5,27 +9,38 @@ class EvolAlgorithm:
         self.numits = numits
         self.desc = desc
         self.indiv_size = indiv_size
+        pass
 
-    def initPop(self, indiv_size):
+    def init_pop(self, indiv_size):
         self.pop = Populacao(self.pop_size, indiv_size)
+        pass
 
-    def iteracao(self):
-        progenitores = self.pop.selection(self.desc)
-        desc = self.pop.recombination(progenitores, self.desc)
-        #Falta evaluate
-        self.pop.reinsercao(desc)
+    def evaluate(self, indivs):
+        for i in range(len(indivs)):
+            indiv = indivs[i]
+            fit = 0
+            for x in indiv.genome:
+                if x == 1:
+                    fit += 1
+            indiv.set_fitness(fit)
+        pass
+
+    def iteration(self):
+        parents = self.pop.roulette(self.desc)
+        descendentes = self.pop.recombination(parents, self.desc)
+        self.evaluate(descendentes)
+        self.pop.reinsertion(descendentes)
 
     def run(self):
-        self.initPop(self.indiv_size)
-        #self.evaluate(self.popul.indivs)
-        self.bestsol = self.pop.best_indiv()
-        for i in range(self.num + 1):
-            self.iteracao()
-        bs = self.pop.best_indiv()
-        if bs > self.bestsol:
-            self.bestsol = bs
-        print("Iteration:", i, " ", "Best: ", self.bestsol)
+        self.init_pop(self.indiv_size)
+        self.evaluate(self.pop.indivs)
+        self.best_sol = self.pop.best_indiv()
 
+        for i in range(self.numits + 1):
+            self.iteration()
+            best_s = self.pop.best_indiv()
+            if best_s > self.best_sol:
+                self.best_sol = best_s
 
-
+            print(f"Iteration {i}: Best solution = {self.best_sol}")
 

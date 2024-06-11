@@ -139,5 +139,13 @@ class Individuos:
         """
 
         return sum(self.genome)
+    
+    def get_genes(self):
+        #for i in range(len(self.genome)):
+        #    return self.genome[i]
+        return self.genome
+
+    def set_fitness(self, fit):
+        self.fitness = fit
 
     pass

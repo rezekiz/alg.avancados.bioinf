@@ -1,5 +1,5 @@
-from algoritmos_evolucionarios import Individuos
-
+from Ind import Individuos
+import random
 
 # Classe população
 
@@ -62,7 +62,7 @@ class Populacao:
         return self.indivs[index]
 
     # Retorna lista de aptidões de todos os indivíduos da população
-    def get_fitnesses(self):
+    def get_fitnesses(self, indivs=None):
         """
             Retorna a lista de aptidões de todos os indivíduos da população.
 
@@ -78,6 +78,7 @@ class Populacao:
             fitnesses.append(indiv.get_fitness())
         return fitnesses
 
+    #Retorna o número do melhor indivíduo
     def best_indiv(self):
         """
             Retorna o melhor indivíduo da população.
@@ -92,55 +93,75 @@ class Populacao:
         for indiv in self.indivs:
             if indiv.get_fitness() > best_indiv.get_fitness():
                 best_indiv = indiv
-        return best_indiv
 
-    # Retorna o melhor indivíduo da população
+        best_ind = self.indivs.index(best_indiv) + 1
+
+        return best_ind
+
+    # Retorna a aptidão do melhor indivíduo
     def best_fitness(self):
-        return self.best_indiv().get_fitness()
-
-    def selection(self, num_indivs, indivs=None):
-
-        if not indivs:
-            indivs = self.indivs
-
-        list_selection = []
-
-        # Lista de fitenesses de cada indivíduo da população
-        fitnesses = list(self.get_fitnesses(indivs))
-
-        for i in range(num_indivs):
-            selection = self.roullete(fitnesses)
-
-            fitnesses[selection] = 0.0
-
-            list_selection.append(selection)
-
-            return list_selection
-
-    # Roleta seletora
-    def roullete(self, fitnesses):
         """
+            Retorna a aptidão do melhor indivíduo da população.
+
+            Parâmetros:
+                None
+
+            Retorno:
+                int: A aptidão do melhor indivíduo da população.
+        """
+        return self.indivs[self.best_indiv()-1].get_fitness()
+
+    def linscaling(self, fitnesses):
+        """
+        Realiza o escalonamento linear das aptidões.
 
         Parâmetros:
             fitnesses (list): A lista de aptidões dos indivíduos.
 
+        Retorno:
+            list: A lista de aptidões escalonadas linearmente.
         """
+        maximo = max(fitnesses)
+        minimo = min(fitnesses)
 
-        # Calcula o total de aptidoes
-        total_fitness = sum(fitnesses)
+        # Evita divisão por zero quando todos os fitnesses são iguais
+        if maximo == minimo:
+            return [1.0] * len(fitnesses)
+        res = []
+        for f in fitnesses:
+            val = (f - minimo) / (maximo - minimo)
+            res.append(val)
+        return res
 
-        # Seleciona um valor aleatório
-        random_value = random.uniform(0, total_fitness)
+    def roulette(self, n, indivs=None):
+        """
+        Realiza a seleção de n indivíduos da população utilizando o método de roleta.
 
-        running_sum = 0.0
+        Parâmetros:
+            n (int): O número de indivíduos a serem selecionados.
+            indivs (list): A lista de indivíduos da população. Se não for fornecida, utiliza os indivíduos da própria população.
 
-        # Itera sobre o total de aptidoes e seleciona o indivíduo correspondente ao valor aleatório
-        for i in range(len(fitnesses)):
-            running_sum += fitnesses[i]
-            if running_sum >= random_value:
-                return i
+        Retorno:
+            list: Uma lista contendo os índices dos indivíduos selecionados.
+        """
+        res = []
+        fitnesses = self.linscaling(self.get_fitnesses(indivs))
+        tot_fitness = sum(fitnesses)
 
-        pass
+        for _ in range(n):
+            val = random.random() * tot_fitness
+            acum = 0.0
+            ind = 0
+
+            while acum < val:
+                acum += fitnesses[ind]
+                ind += 1
+
+            res.append(ind - 1)
+            tot_fitness -= fitnesses[ind - 1]
+            fitnesses.pop(ind - 1)
+
+        return res
 
     # Recombinação
     def recombination(self, progenitores, num_desc):
@@ -148,30 +169,66 @@ class Populacao:
         desc = []
         num = 0
 
+        num_progenitores = len(progenitores)
+
         while num < num_desc:
 
-            prog1 = self.indivs[progenitores[num]]
-            prog2 = self.indivs[progenitores[num + 1]]
+            for num_progenitores in range(0, len(progenitores)-1):
 
-            # Perform a simple crossover operation
-            desc_1 = prog1.genome[:self.indiv_size // 2] + prog2.genome[self.indiv_size // 2:]
-            desc_2 = prog2.genome[:self.indiv_size // 2] + prog1.genome[self.indiv_size // 2:]
+                prog1 = self.indivs[progenitores[num_progenitores]]
+                prog2 = self.indivs[progenitores[num_progenitores + 1]]
 
-            # Apply mutation to the desc
-            desc_1 = desc_1.mutation(desc_1)
-            desc_2 = desc_1.mutation(desc_2)
+                # Perform a simple crossover operation
+                desc1, desc2 = prog1.crossover(prog2)
 
-            desc.append(desc_1)
-            desc.append(desc_2)
-            num += 2
+                desc1.mutation()
+                desc2.mutation()
 
-        return desc
+                desc.append(desc1)
+                desc.append(desc2)
 
-    def reinsercao(self, desc):
+                num += 2
 
-        sobreviventes = self.selection(self.pop_size - len(desc))
-        self.indivs = [ind if i in sobreviventes else d for i, (ind, d) in enumerate(zip(self.indivs, desc))]
+        gene_desc = []
 
-        pass
+        for indiv in desc:
+            ind = indiv.genome
+            gene_desc.append(ind)
 
+        if num_desc % 2 == 0:
+            return gene_desc
+        else:
+            return gene_desc[:-1]
+
+    def reinsertion(self, offspring):
+        """
+        Realiza a reinserção dos descendentes na população.
+
+        Parâmetros:
+            offspring (list): A lista de novos descendentes.
+
+        Retorno:
+            None
+        """
+        # Seleciona os indivíduos da população original que serão mantidos
+        tokeep = self.roulette(self.pop_size - len(offspring))
+
+        # Índice para iterar sobre os descendentes
+        ind_offsp = 0
+
+        # Itera sobre toda a população
+        for i in range(self.pop_size):
+            while ind_offsp < len(offspring):
+            # Se o indivíduo não estiver na lista de indivíduos a manter, substitui-o por um descendente
+                if i not in tokeep:
+                    self.indivs[i] = Individuos(self.indiv_size, genome=offspring[ind_offsp])
+                    ind_offsp += 1
+        indivs = self.indivs
+
+        genome_pop = []
+
+        for i in indivs:
+            genome_pop.append(i.genome)
+
+        return genome_pop
     pass
