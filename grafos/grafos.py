@@ -98,6 +98,9 @@ class Graph:
 
         Returns:
             graphviz.Digraph: The Graphviz object representing the graph.
+
+        To export to PDF use render():
+            graph.show().render()
         """
         if txt:
             for key in self.g.keys():
