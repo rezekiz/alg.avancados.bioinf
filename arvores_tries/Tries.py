@@ -1,4 +1,19 @@
+"""
+Código base inspirado em:
+    - https://www.youtube.com/watch?v=oobqoCJlHA0
+    - https://imois.in/posts/python-trie/
+"""
+
 class TrieNode:
+    """
+    Classe que representa um nó na estrutura de dados Trie.
+
+    Atributos:
+        letra (str): A letra representada pelo nó.
+        children (dict): Dicionário que mapeia cada letra a um TrieNode filho.
+        fim_palavra (bool): Indica se este nó marca o fim de uma palavra.
+    """
+
     def __init__(self, letra : str = None) -> None:
         """
         Inicializa um nó da Trie.
@@ -54,6 +69,12 @@ class TrieNode:
 
 
 class Trie:
+    """
+    Classe que representa a estrutura de dados Trie.
+
+    Atributos:
+        root (TrieNode): O nó raiz da Trie.
+    """
     def __init__(self) -> None:
         """
         Inicializa uma Trie vazia.
