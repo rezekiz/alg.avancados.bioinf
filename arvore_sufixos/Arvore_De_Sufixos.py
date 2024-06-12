@@ -1,3 +1,8 @@
+"""
+Código base retirado dos powerpoints das aulas (da autoria de Rui Mendes) com pequenas alterações.
+Utilização do stack overflow e de LLMs (GPT 3.5 e Gemini 1.5) para algumas correções
+"""
+
 class ArvoreDeSufixos:
 
     def __init__(self):
