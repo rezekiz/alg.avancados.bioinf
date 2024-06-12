@@ -113,20 +113,4 @@ class ArvoreDeSufixos:
                 res.extend(folhas)
         return res
 
-def teste():
-
-    """
-    Testa a construção e busca na árvore de sufixos
-
-    """
-
-    seq = "TACTA"
-    arvore = ArvoreDeSufixos()
-    arvore.build_arvore_de_sufixos(seq)
-    arvore.print_arvore()
-    print(arvore.encontrar_padrao("TA"))
-    print(arvore.encontrar_padrao("ACG"))
-
-teste()
-
 
