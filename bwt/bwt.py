@@ -5,13 +5,13 @@ Utilização do stack overflow e de LLMs (GPT 3.5/ BlackboxAI) para algumas corr
 
 def bwt_transf(seq : str) -> str:
     """
-    -Realiza a transformação de Burrows-Wheeler em uma sequência dada.
+    Realiza a transformação de Burrows-Wheeler em uma sequência dada.
 
-    -Parâmetros:
-    seq (str): A sequência de entrada.
+    Parâmetros:
+        seq (str): A sequência de entrada.
 
-    -Retorna:
-    tuple: Uma tupla contendo a sequência transformada de Burrows-Wheeler e o índice original da sequência na lista de rotações.
+    Retorna:
+        tuple: Uma tupla contendo a sequência transformada de Burrows-Wheeler e o índice original da sequência na lista de rotações.
     """
 
     # Adiciona o caractere de terminação '$' à sequência
@@ -30,13 +30,13 @@ def bwt_transf(seq : str) -> str:
 
 def bwt_reverse(bwt : str) -> str:
     """
-    -Reverte a transformação de Burrows-Wheeler em uma sequência original.
+    Reverte a transformação de Burrows-Wheeler em uma sequência original.
     
-    -Parâmetros:
-    bwt (str): A sequência de Burrows-Wheeler.
+    Parâmetros:
+        bwt (str): A sequência de Burrows-Wheeler.
     
-    -Retorna:
-    str: A sequência original.
+    Retorna:
+        str: A sequência original.
     """
 
     # Cria uma lista vazia do tamanho da sequência BWT

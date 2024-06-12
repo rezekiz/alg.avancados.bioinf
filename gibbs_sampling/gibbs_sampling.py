@@ -13,10 +13,11 @@ def escolhe_seq(seqs : List[str]) -> Tuple[int, str]:
     '''
     Seleciona aleatoriamente uma sequência do conjunto de sequências.
 
+    Parâmetros:
+        seqs (List[str]): Lista de sequências de DNA.
+
     Retorna:
-    - Tuple: (indice, escolhida), onde:
-        * indice: índice da sequência selecionada
-        * escolhida: sequência selecionada
+        Tuple[int, str]: Tuplo contendo o índice da sequência selecionada e a própria sequência.
     '''
     assert isinstance(seqs, list) and all(isinstance(seq,str) for seq in seqs),\
         "Devem ser listas de strings"
@@ -29,10 +30,13 @@ def gerar_snips(seqs: List[str], tam_motif: int, indice: int) -> Tuple[List[int]
     '''
     Gera snips para todas as sequências, exceto uma sequência escolhida aleatoriamente.
 
+    Parâmetros:
+        seqs (List[str]): Lista de sequências de DNA.
+        tam_motif (int): Tamanho do motif a ser gerado.
+        indice (int): Índice da sequência que será excluída da geração de snips.
+
     Retorna:
-    - Tuple: (offsets, snips), onde:
-        * offsets: lista de offsets para cada sequência
-        * snips: lista de snips para cada sequência
+        Tuple[List[int], List[str]]: Tuplo contendo a lista de offsets e a lista de snips gerados.
     '''
     assert seqs, \
         "Não pode ser lista vazia."
@@ -61,8 +65,11 @@ def pwm(snips : List[str]) -> List[Dict[str, float]]:
     '''
     Calcula a matriz de PWM (Position Weight Matrix) para uma lista de snips.
 
+    Parâmetros:
+        snips (List[str]): Lista de snips de DNA.
+
     Retorna:
-    - List[dict]: lista de dicionários representando a matriz PWM
+        List[Dict[str, float]]: Lista de dicionários representando a matriz PWM.
     '''
     return [
         {base: (seq.count(base) + 1) / (len(seq) + 4) for base in 'ACGT'} for seq in zip(*snips)
@@ -70,21 +77,14 @@ def pwm(snips : List[str]) -> List[Dict[str, float]]:
 
 def prob_snip(snip: str, pwm_matrix: float) -> float:
     '''
-    Função que calcula a P(snip|P), para determinar a probabilidade
-    deste ser gerado pelo perfil P
+    Calcula a probabilidade de um snip ser gerado pelo perfil P (matriz PWM).
 
     Parâmetros:
-
-    snip : str
-        strings correspondente a bases de DNA
-
-    P : list[dict]
-        perfil probabilistico para um conjunto de sub-sequências de DNA
+        snip (str): Snip de DNA a ser avaliado.
+        pwm_matrix (List[Dict[str, float]]): Matriz PWM representando o perfil probabilístico.
 
     Retorna:
-
-    float
-        P(snip|P)
+        float: Probabilidade do snip dado o perfil P.
     '''
     score = 1
     for pos, base in enumerate(snip):
@@ -93,12 +93,15 @@ def prob_snip(snip: str, pwm_matrix: float) -> float:
 
 def best_pos(snips: List[str], offsets: List[int], pwm_matrix: float) -> Tuple[float, int]:
     '''
-    Encontra a melhor posição e offset.
+    Encontra a melhor posição e offset baseado na matriz PWM.
+
+    Parâmetros:
+        snips (List[str]): Lista de snips de DNA.
+        offsets (List[int]): Lista de offsets correspondentes aos snips.
+        pwm_matrix (List[Dict[str, float]]): Matriz PWM representando o perfil probabilístico.
 
     Retorna:
-    - Tuple: (melhor_prob, melhor_offset), onde:
-        * melhor_prob: melhor probabilidade
-        * melhor_offset: melhor offset
+        Tuple[float, int]: Tuplo contendo a melhor probabilidade encontrada e o offset correspondente.
     '''
     probs = [prob_snip(snip, pwm_matrix) for snip in snips]
     prob_sum = sum(probs)
@@ -107,10 +110,16 @@ def best_pos(snips: List[str], offsets: List[int], pwm_matrix: float) -> Tuple[f
 
 def gibbs_sampling(seqs: List[str], tam_motif: int, num_iteracoes: int, threshold: float) -> List[str]:
     '''
-    Executa o algoritmo de amostragem de Gibbs para encontrar motifs.
+    Executa o algoritmo de amostragem de Gibbs para encontrar motifs nas sequências fornecidas.
+
+    Parâmetros:
+        seqs (List[str]): Lista de sequências de DNA.
+        tam_motif (int): Tamanho do motif a ser encontrado.
+        num_iteracoes (int): Número máximo de iterações para executar o algoritmo.
+        threshold (float): Limite de probabilidade para encerrar o algoritmo.
 
     Retorna:
-    - List: lista de melhores motifs encontrados
+        List[str]: Lista dos melhores motifs encontrados durante as iterações.
     '''
 
     i_zero = num_iteracoes
