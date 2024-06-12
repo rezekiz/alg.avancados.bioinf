@@ -1,77 +1,70 @@
-from Ind import Individuos
+"""
+Código inspirado nos slides de Algoritmos Evolutivos
+"""
 import random
-
+from Ind import Individuos
 
 # Classe população
-
 class Populacao:
 
-    def __init__(self, pop_size: int, indiv_size: int, indivs: list = None):
+    def __init__(self, pop_size: int, indiv_size: int, indivs: list[Individuos] = None) -> None:
         """
-            Inicializa um novo objeto da classe população.
+        Inicializa um novo objeto da classe população.
 
-            Parâmetros:
-                pop_size (int): O número de indivíduos na população.
-                indiv_size (int): O tamanho do genoma de cada indivíduo.
-                indivs (list): A lista de indivíduos. Se a lista for vazia inicializa com valores aleatórios.
+        Parâmetros:
+            pop_size (int): O número de indivíduos na população.
+            indiv_size (int): O tamanho do genoma de cada indivíduo.
+            indivs (list): A lista de indivíduos. Se a lista for vazia inicializa com valores aleatórios.
 
+        Retorna:
+            None
         """
-
         self.pop_size = pop_size
         self.indiv_size = indiv_size
 
-        # Caso indivs seja vazio inicializa com valores aleatórios
         if indivs:
             self.indivs = indivs
         else:
             self.init_aleat_pop()
         pass
 
-    # Inicialização aleatória da população
-    def init_aleat_pop(self):
+    def init_aleat_pop(self) -> None:
         """
-            Inicializa um novo objeto da classe populacao com valores aleatórios.
+        Inicializa um novo objeto da classe populacao com valores aleatórios.
 
-            Parâmetros:
-                None
+        Parâmetros:
+            None
 
-            Retorno:
-                None
+        Retorna:
+            None
         """
-
-        # Cria a lista de indivíduos
         self.indivs = []
 
-        # Itera sobre o intervalo de 0 a (pop_size - 1)
         for i in range(self.pop_size):
-            # Cria um novo objeto da classe Individuos com o tamanho do genoma especificado
-            # e adiciona-o à lista de indivíduos
             self.indivs.append(Individuos(self.indiv_size))
         pass
 
-    # Retorna o indivíduo da população com o parâmetro index
-    def get_indiv(self, index: int):
+    def get_indiv(self, index: int) -> Individuos:
         """
-            Retorna o indivíduo da população com o parâmetro index.
+        Retorna o indivíduo da população na posição especificada pelo parâmetro index.
 
-            Parâmetros:
-                index (int): O indice do indivíduo da população.
+        Parâmetros:
+            index (int): O índice do indivíduo da população desejado.
 
-            Retorno:
-                Individuos: O indivíduo da população.
+        Retorna:
+            Individuos: O indivíduo na posição especificada.
         """
         return self.indivs[index]
 
-    # Retorna lista de aptidões de todos os indivíduos da população
-    def get_fitnesses(self):
+    def get_fitnesses(self) -> list[float]:
         """
-            Retorna a lista de aptidões de todos os indivíduos da população.
+        Retorna a lista de aptidões de todos os indivíduos da população.
 
-            Parâmetros:
-                None
+        Parâmetros:
+            None
 
-            Retorno:
-                list: A lista de aptidões de todos os indivíduos da população.
+        Retorna:
+            list: A lista de aptidões de todos os indivíduos da população.
         """
         fitnesses = []
 
@@ -79,16 +72,15 @@ class Populacao:
             fitnesses.append(indiv.get_fitness())
         return fitnesses
 
-    # Retorna o número do melhor indivíduo
-    def best_indiv(self):
+    def best_indiv(self) -> int:
         """
-            Retorna o melhor indivíduo da população.
+        Retorna o índice do melhor indivíduo na população.
 
-            Parâmetros:
-                None
+        Parâmetros:
+            None
 
-            Retorno:
-                Individuos: O melhor indivíduo da população.
+        Retorna:
+            int: O índice do melhor indivíduo.
         """
         best_indiv = self.indivs[0]
         for indiv in self.indivs:
@@ -99,34 +91,32 @@ class Populacao:
 
         return best_ind
 
-    # Retorna a aptidão do melhor indivíduo
-    def best_fitness(self):
+    def best_fitness(self) -> float:
         """
-            Retorna a aptidão do melhor indivíduo da população.
+        Retorna a aptidão do melhor indivíduo da população.
 
-            Parâmetros:
-                None
+        Parâmetros:
+            None
 
-            Retorno:
-                int: A aptidão do melhor indivíduo da população.
+        Retorna:
+            int: A aptidão do melhor indivíduo da população.
         """
         return self.indivs[self.best_indiv() - 1].get_fitness()
 
     @staticmethod
-    def linscaling(fitnesses):
+    def linscaling(fitnesses: list[float]) -> list[float]:
         """
         Realiza o escalonamento linear das aptidões.
 
         Parâmetros:
             fitnesses (list): A lista de aptidões dos indivíduos.
 
-        Retorno:
+        Retorna:
             list: A lista de aptidões escalonadas linearmente.
         """
         maximo = max(fitnesses)
         minimo = min(fitnesses)
 
-        # Evita divisão por zero quando todos os fitnesses são iguais
         if maximo == minimo:
             return [1.0] * len(fitnesses)
         res = []
@@ -135,14 +125,14 @@ class Populacao:
             res.append(val)
         return res
 
-    def roulette(self, n):
+    def roulette(self, n: int) -> list[int]:
         """
         Realiza a seleção de n indivíduos da população utilizando o método de roleta.
 
-        Parâmetros: n (int): O número de indivíduos a serem selecionados. indivs (list): A lista de indivíduos da
-        população. Se não for fornecida, utiliza os indivíduos da própria população.
+        Parâmetros:
+            n (int): O número de indivíduos a serem selecionados.
 
-        Retorno:
+        Retorna:
             list: Uma lista contendo os índices dos indivíduos selecionados.
         """
         res = []
@@ -164,8 +154,17 @@ class Populacao:
 
         return res
 
-    # Recombinação
-    def recombination(self, progenitores, num_desc):
+    def recombination(self, progenitores: list[int], num_desc: int) -> list[list[int]]:
+        """
+        Realiza a recombinação dos indivíduos selecionados.
+
+        Parâmetros:
+            progenitores (list): Lista de índices dos indivíduos selecionados como progenitores.
+            num_desc (int): Número de descendentes a serem gerados.
+
+        Retorna:
+            list: Lista contendo os descendentes gerados.
+        """
 
         desc = []
         num = 0
@@ -178,7 +177,6 @@ class Populacao:
                 prog1 = self.indivs[progenitores[num_progenitores]]
                 prog2 = self.indivs[progenitores[num_progenitores + 1]]
 
-                # Perform a simple crossover operation
                 desc1, desc2 = prog1.crossover(prog2)
 
                 desc1.mutation()
@@ -200,27 +198,22 @@ class Populacao:
         else:
             return gene_desc[:-1]
 
-    def reinsertion(self, offspring):
+    def reinsertion(self, offspring: list[list[int]]) -> list[list[int]]:
         """
         Realiza a reinserção dos descendentes na população.
 
         Parâmetros:
             offspring (list): A lista de novos descendentes.
 
-        Retorno:
-            None
+        Retorna:
+            list: Lista da população final após a reinserção dos descendentes.
         """
-        # Índice dos índividuos da população a manter
         tokeep = self.roulette(self.pop_size - len(offspring))
-
-        # Lista da população final
         final_pop = []
 
-        # Adiciona os índividuos da população a manter
         for i in tokeep:
             final_pop.append(self.indivs[i].genome)
 
-        # Adiciona os descendentes
         for i in range(len(offspring)):
             final_pop.append(offspring[i])
 

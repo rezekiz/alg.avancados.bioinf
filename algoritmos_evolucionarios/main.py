@@ -1,4 +1,3 @@
-
 from Ind import Individuos
 from Pop import Populacao
 from AlgEvol import EvolAlgorithm
@@ -54,7 +53,7 @@ if __name__ == "__main__":
         print(f"Indivíduo {i + 1}: {indiv.genome}")
 
     # Obter indíviduo conforme o parâmetro index
-    print("Indivíduo 2:", populacao.get_indiv(1).genome)
+    print("Indivíduo 2:", populacao.get_indiv(1))
 
     # Avaliação da aptidão da população
     print("Aptidão da População:", populacao.get_fitnesses())
@@ -86,11 +85,7 @@ if __name__ == "__main__":
 
     # Cria um objeto da classe EvolAlgorithm
     evol = EvolAlgorithm(pop_size, numits, desc, indiv_size)
-    print("Avaliação do fit dos indivíduos:",evol.evaluate([[0, 0, 1, 0, 0], [1, 1, 0, 1, 1], [0, 0, 0, 1, 0]]))
+    print("Avaliação do fit dos indivíduos:", evol.evaluate([[0, 0, 1, 0, 0], [1, 1, 0, 1, 1], [0, 0, 0, 1, 0]]))
 
     # Executa o algoritmo
     print("Algoritmo a correr:", evol.run())
-
-
-
-
