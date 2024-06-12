@@ -4,16 +4,36 @@ Utilização do stack overflow e de LLMs (GPT 3.5 e Gemini 1.5) para algumas cor
 """
 
 class ArvoreDeSufixos:
+    """
+    Classe para representar uma árvore de sufixos.
 
-    def __init__(self):
+    Atributos:
+        nodes (dict): Um dicionário que mapeia cada nodo da árvore para seus filhos.
+        num (int): O número total de nodos na árvore.
+    """
+    def __init__(self) -> None:
+        """
+        Inicializa uma árvore de sufixos.
+
+        Parâmetros:
+            None
+
+        Retorna:
+            None
+        """
         self.nodes = {0: (-1, {})}  # Node raiz
         self.num = 0
 
-    def print_arvore(self):
+    def print_arvore(self) -> None:
 
         """
-        Imprime a árvore de sufixos
+        Imprime a árvore de sufixos.
 
+        Parâmetros:
+            None
+
+        Retorna:
+            None
         """
 
         for k, v in self.nodes.items():
@@ -22,22 +42,25 @@ class ArvoreDeSufixos:
             else:
                 print(f"{k} : {v[0]}")
 
-    def add_node(self, origem, simbolo, num_folha: int = -1):
+    def add_node(self, origem : int, simbolo : str, num_folha: int = -1) -> None:
 
         """
-        Adiciona um node à árvore
+        Adiciona um nodo à árvore de sufixos.
 
         Parâmetros:
-            origem (int): Node de origem
-            simbolo (str): Símbolo da transição
-            num_folha (int): Número da folha (padrão -1)
+            origem (int): O nódulo de origem.
+            simbolo (str): O símbolo da transição.
+            num_folha (int): O número da folha associada ao nódulo, se houver. Padrão é -1.
+
+        Retorna:
+            None
         """
 
         self.num += 1
         self.nodes[origem][1][simbolo] = self.num
         self.nodes[self.num] = (num_folha, {})
 
-    def add_sufixo(self, p, num_sufixo):
+    def add_sufixo(self, p : str, num_sufixo : int) -> None:
 
         """
         Adiciona um sufixo à árvore
@@ -60,7 +83,7 @@ class ArvoreDeSufixos:
             pos += 1
 
 
-    def build_arvore_de_sufixos(self, seq):
+    def build_arvore_de_sufixos(self, seq : str) -> None:
 
         """
         Constrói a árvore de sufixos a partir de uma sequência
@@ -76,7 +99,7 @@ class ArvoreDeSufixos:
         for i in range(len(t)):
             self.add_sufixo(t[i:], i)
 
-    def encontrar_padrao(self, padrao):
+    def encontrar_padrao(self, padrao : str) -> list:
         """
         Encontra o padrão na árvore de sufixos.
 
@@ -97,7 +120,7 @@ class ArvoreDeSufixos:
                 return None
         return self.obter_folhas_abaixo(node)
 
-    def obter_folhas_abaixo(self, node) -> list:
+    def obter_folhas_abaixo(self, node : int) -> list:
 
         """
         Obtém as folhas abaixo de um nodo.
