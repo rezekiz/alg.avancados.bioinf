@@ -1,1 +1,6 @@
-from .Ind import * #provavelmente vai ser preciso nomear tudo
+from .Ind import Individuos
+from .Pop import Populacao
+from .AlgEvol import EvolAlgorithm
+
+__all__ = ["Individuos", "Populacao", "EvolAlgorithm"]
+

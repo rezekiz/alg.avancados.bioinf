@@ -1,4 +1,4 @@
-from Ind import Individuos
+from .Ind import Individuos
 import random
 
 

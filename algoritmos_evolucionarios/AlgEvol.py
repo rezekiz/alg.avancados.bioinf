@@ -1,10 +1,9 @@
-from Pop import Populacao
-from Ind import Individuos
-
+from .Pop import Populacao
 
 class EvolAlgorithm:
 
-    def __init__(self, pop_size : int, numits, desc : int, indiv_size : int):
+    def __init__(self, pop_size: int, numits, desc: int, indiv_size: int):
+        self.best_sol = None
         self.pop_size = pop_size
         self.numits = numits
         self.desc = desc
@@ -33,7 +32,6 @@ class EvolAlgorithm:
         # Tem de receber objetos do tipo Individuos e não recebe
         self.evaluate(descendentes)
         self.pop.reinsertion(descendentes)
-
 
     def run(self):
         self.init_pop(self.indiv_size)
