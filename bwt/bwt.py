@@ -1,3 +1,8 @@
+"""
+Código base retirado dos powerpoints das aulas (da autoria de Rui Mendes) com pequenas alterações.
+Utilização do stack overflow e de LLMs (GPT 3.5/ BlackboxAI) para algumas correções
+"""
+
 def bwt_transf(seq : str) -> str:
     """
     -Realiza a transformação de Burrows-Wheeler em uma sequência dada.
