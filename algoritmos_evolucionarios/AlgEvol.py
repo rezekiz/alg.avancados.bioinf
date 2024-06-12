@@ -4,36 +4,46 @@ from Ind import Individuos
 
 class EvolAlgorithm:
 
-    def __init__(self, pop_size, numits, desc, indiv_size):
+    def __init__(self, pop_size : int, numits, desc : int, indiv_size : int):
         self.pop_size = pop_size
         self.numits = numits
         self.desc = desc
         self.indiv_size = indiv_size
-        pass
+        self.pop = None
 
     def init_pop(self, indiv_size):
         self.pop = Populacao(self.pop_size, indiv_size)
-        pass
+        return self.pop
 
     def evaluate(self, indivs):
+        fit_ind = []
         for i in range(len(indivs)):
             indiv = indivs[i]
             fit = 0
-            for x in indiv.genome:
+            for x in indiv:
                 if x == 1:
                     fit += 1
-            indiv.set_fitness(fit)
-        pass
+            fit_ind.append(fit)
+        return fit_ind
 
     def iteration(self):
         parents = self.pop.roulette(self.desc)
         descendentes = self.pop.recombination(parents, self.desc)
+
+        # Tem de receber objetos do tipo Individuos e não recebe
         self.evaluate(descendentes)
         self.pop.reinsertion(descendentes)
 
+
     def run(self):
         self.init_pop(self.indiv_size)
-        self.evaluate(self.pop.indivs)
+        indivs = []
+
+        for indiv in self.pop.indivs:
+            indivs.append(indiv.get_genes())
+
+        self.evaluate(indivs)
+
         self.best_sol = self.pop.best_indiv()
 
         for i in range(self.numits + 1):
@@ -43,4 +53,3 @@ class EvolAlgorithm:
                 self.best_sol = best_s
 
             print(f"Iteration {i}: Best solution = {self.best_sol}")
-

@@ -26,11 +26,11 @@ class Individuos:
         self.genome = genome
         self.lim_sup = lim_sup
         self.lim_inf = lim_inf
+        self.fitness = None  # Inicializa o atributo fitness
 
         # Se objeto genome for vazio inicializa com valores aleatórios
         if not self.genome:
             self.init_aleat_indiv(size)
-
         pass
 
     # Inicialização aleatória de um indivíduo
@@ -137,15 +137,22 @@ class Individuos:
             Retorno:
                 int: A aptidão do indivíduo.
         """
+        if self.fitness is None:
+            self.fitness = sum(self.genome)  # Calcula a fitness se ainda não estiver definida
+        return self.fitness
 
-        return sum(self.genome)
-    
+    # ISTO PARECE-ME REDUNDANTE
     def get_genes(self):
-        #for i in range(len(self.genome)):
-        #    return self.genome[i]
-        return self.genome
+
+        genes_list = []
+
+        for i in range(len(self.genome)):
+            genes_list.append(self.genome[i])
+
+        return genes_list
 
     def set_fitness(self, fit):
         self.fitness = fit
+        return self.fitness
 
     pass

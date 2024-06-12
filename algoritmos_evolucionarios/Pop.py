@@ -1,6 +1,7 @@
 from Ind import Individuos
 import random
 
+
 # Classe população
 
 class Populacao:
@@ -62,7 +63,7 @@ class Populacao:
         return self.indivs[index]
 
     # Retorna lista de aptidões de todos os indivíduos da população
-    def get_fitnesses(self, indivs=None):
+    def get_fitnesses(self):
         """
             Retorna a lista de aptidões de todos os indivíduos da população.
 
@@ -78,7 +79,7 @@ class Populacao:
             fitnesses.append(indiv.get_fitness())
         return fitnesses
 
-    #Retorna o número do melhor indivíduo
+    # Retorna o número do melhor indivíduo
     def best_indiv(self):
         """
             Retorna o melhor indivíduo da população.
@@ -109,9 +110,10 @@ class Populacao:
             Retorno:
                 int: A aptidão do melhor indivíduo da população.
         """
-        return self.indivs[self.best_indiv()-1].get_fitness()
+        return self.indivs[self.best_indiv() - 1].get_fitness()
 
-    def linscaling(self, fitnesses):
+    @staticmethod
+    def linscaling(fitnesses):
         """
         Realiza o escalonamento linear das aptidões.
 
@@ -133,19 +135,18 @@ class Populacao:
             res.append(val)
         return res
 
-    def roulette(self, n, indivs=None):
+    def roulette(self, n):
         """
         Realiza a seleção de n indivíduos da população utilizando o método de roleta.
 
-        Parâmetros:
-            n (int): O número de indivíduos a serem selecionados.
-            indivs (list): A lista de indivíduos da população. Se não for fornecida, utiliza os indivíduos da própria população.
+        Parâmetros: n (int): O número de indivíduos a serem selecionados. indivs (list): A lista de indivíduos da
+        população. Se não for fornecida, utiliza os indivíduos da própria população.
 
         Retorno:
             list: Uma lista contendo os índices dos indivíduos selecionados.
         """
         res = []
-        fitnesses = self.linscaling(self.get_fitnesses(indivs))
+        fitnesses = self.linscaling(self.get_fitnesses())
         tot_fitness = sum(fitnesses)
 
         for _ in range(n):
@@ -169,12 +170,11 @@ class Populacao:
         desc = []
         num = 0
 
-        num_progenitores = len(progenitores)
+        len(progenitores)
 
         while num < num_desc:
 
-            for num_progenitores in range(0, len(progenitores)-1):
-
+            for num_progenitores in range(0, len(progenitores) - 1):
                 prog1 = self.indivs[progenitores[num_progenitores]]
                 prog2 = self.indivs[progenitores[num_progenitores + 1]]
 
@@ -210,25 +210,20 @@ class Populacao:
         Retorno:
             None
         """
-        # Seleciona os indivíduos da população original que serão mantidos
+        # Índice dos índividuos da população a manter
         tokeep = self.roulette(self.pop_size - len(offspring))
 
-        # Índice para iterar sobre os descendentes
-        ind_offsp = 0
+        # Lista da população final
+        final_pop = []
 
-        # Itera sobre toda a população
-        for i in range(self.pop_size):
-            while ind_offsp < len(offspring):
-            # Se o indivíduo não estiver na lista de indivíduos a manter, substitui-o por um descendente
-                if i not in tokeep:
-                    self.indivs[i] = Individuos(self.indiv_size, genome=offspring[ind_offsp])
-                    ind_offsp += 1
-        indivs = self.indivs
+        # Adiciona os índividuos da população a manter
+        for i in tokeep:
+            final_pop.append(self.indivs[i].genome)
 
-        genome_pop = []
+        # Adiciona os descendentes
+        for i in range(len(offspring)):
+            final_pop.append(offspring[i])
 
-        for i in indivs:
-            genome_pop.append(i.genome)
+        return final_pop
 
-        return genome_pop
     pass

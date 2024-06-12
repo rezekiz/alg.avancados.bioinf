@@ -32,6 +32,14 @@ if __name__ == "__main__":
     print("Aptidão do Indivíduo 1:", ind1.get_fitness())
     print("Aptidão do Indivíduo 2:", ind2.get_fitness())
 
+    # Obter genoma dos indivíduos por função
+    print("Genoma do Indivíduo 1:", ind1.get_genes())
+    print("Genoma do Indivíduo 2:", ind2.get_genes())
+
+    # Designar fitness de indivíduos
+    print("Aptidão do Indivíduo 1:", ind1.set_fitness(10))
+    print("Verificar alteração da aptidão do Indivíduo 1:", ind1.get_fitness())
+
     ## Ver classe Populacao
 
     # Criar uma população
@@ -61,7 +69,7 @@ if __name__ == "__main__":
 
     # Seleção
     num_ind = 3
-    print("Seleção de indivíduos por roleta:", populacao.roulette(5))
+    print("Seleção de indivíduos por roleta:", populacao.roulette(2))
 
     # Recombinação
     print("Recombinação:", populacao.recombination([3, 4], 3))
@@ -75,8 +83,14 @@ if __name__ == "__main__":
     desc = 5
     indiv_size = 5
 
-    # Criar uma instância da classe EvolAlgorithm
-    evol_algo = EvolAlgorithm(pop_size, numits, desc, indiv_size)
+    # Cria um objeto da classe EvolAlgorithm
+    evol = EvolAlgorithm(pop_size, numits, desc, indiv_size)
+    print("Avaliação do fit dos indivíduos:",evol.evaluate([[0, 0, 1, 0, 0], [1, 1, 0, 1, 1], [0, 0, 0, 1, 0]]))
 
-    # Executar o algoritmo evolucionário
-    evol_algo.iteration()
+#    print("Verificação da iteração dos indivíduos:",evol.iteration())
+
+    print("Algoritmo a correr:", evol.run())
+
+
+
+
