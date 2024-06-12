@@ -1,6 +1,4 @@
-from Ind import Individuos
-from Pop import Populacao
-from AlgEvol import EvolAlgorithm
+from alg_evol import Individuos, Populacao, EvolAlgorithm
 
 if __name__ == "__main__":
 

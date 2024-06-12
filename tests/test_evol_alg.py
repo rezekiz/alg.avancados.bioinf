@@ -20,7 +20,7 @@ import unittest
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Importar as classes necessárias
-from algoritmos_evolucionarios import EvolAlgorithm, Individuos, Populacao
+from algoritmos_evolucionarios.alg_evol import Individuos, Populacao, EvolAlgorithm
 
 
 class TestEvolAlgo(unittest.TestCase):

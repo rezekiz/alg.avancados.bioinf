@@ -1,5 +1,4 @@
 import os
-# Add parent dir to path to ensure module is found
 import sys
 import unittest
 
