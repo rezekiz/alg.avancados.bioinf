@@ -4,8 +4,18 @@ Utilização do stack overflow e de LLMs (GPT 3.5 e Gemini 1.5) para algumas cor
 """
 
 class BoyerMoore:
+    """
+    Implementação do algoritmo Boyer-Moore para busca de padrões em texto.
+
+    Atributos:
+        alphabet (str): O alfabeto permitido nos padrões e sequências.
+        pattern (str): O padrão que será procurado na sequência.
+        occ (dict): Dicionário que mapeia caracteres do alfabeto para a última posição onde ocorrem no padrão.
+        f (list): Lista que guarda informações para o pré-processamento do bom sufixo.
+        s (list): Lista que guarda informações para o pré-processamento do bom sufixo.
+    """
     
-    def __init__(self, alphabet, pattern):
+    def __init__(self, alphabet : str, pattern : str) -> None:
 
         """
         Inicia a classe BoyerMoore com o alfabeto e o padrão fornecidos.
@@ -13,25 +23,40 @@ class BoyerMoore:
         Parâmetros:
             alphabet (str): O alfabeto permitido nos padrões e sequências.
             pattern (str): O padrão que será procurado na sequência.
+        
+        Retorna:
+            None
         """
 
         self.alphabet = alphabet
         self.pattern = pattern
         self.preprocess()
 
-    def preprocess(self):
+    def preprocess(self) -> None:
 
         """
         Realiza o pré-processamento do padrão para construir as tabelas de mau caractere e bom sufixo.
+
+        Parâmetros:
+            None
+        
+        Retorna:
+            None
         """
 
         self.process_bcr()
         self.process_gsr()
         
-    def process_bcr(self):
+    def process_bcr(self) -> None:
 
         """
         Implementação do pre-processamento do bad caracter rule
+
+        Parâmetros:
+            None
+        
+        Retorna:
+            None
         """
 
         self.occ = {}
@@ -44,10 +69,16 @@ class BoyerMoore:
             #self.occ[c] = i
 
             
-    def process_gsr(self):
+    def process_gsr(self) -> None:
 
         """
         Implementação do pre-processamento do good suffix rule
+
+        Parâmetros:
+            None
+        
+        Retorna:
+            None
         """
 
         self.f = [0] * (len(self.pattern) + 1)
@@ -73,7 +104,7 @@ class BoyerMoore:
                 j = self.f[j]
 
         
-    def search_pattern(self, text):
+    def search_pattern(self, text : str) -> list:
 
         """
         Procura o padrão na sequência fornecida .
