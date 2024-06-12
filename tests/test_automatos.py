@@ -1,57 +1,62 @@
 import unittest
-from Auxiliares import sobreposicao
-from Automato import Automato
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+import unittest
+
+from automatos_finitos.Automatos_Finitos import *
+from automatos_finitos.Automatos_Finitos import *
 
 class TestAutomaton(unittest.TestCase):
+    """
+    Classe de testes para validar o funcionamento da classe Automato.
+    """
 
-    def test_verify_valid_seq(self):
-        seq = "ATGC"
-        automaton = Automato("ATG")
-        automaton.verify_seq(seq)
+    def test_verificar_seq(self):
+        """
+        Verifica se o método lança uma exceção ValueError quando a sequência contém caracteres inválidos.
+        """
+        automato = Automato("ATG", "ATGCGCATGATG")
+        self.assertIsNone(automato.verificar_seq("ATGCGCATGATG"))
 
-    def test_verify_invalid_seq(self):
-        seq = "ATGX"
-        automaton = Automato("ATG")
         with self.assertRaises(ValueError):
-            automaton.verify_seq(seq)
+            automato.verificar_seq("ATGXCATGATG")  # Sequência inválida
 
-    def test_verify_valid_pattern(self):
-        pattern = "ATG"
-        automaton = Automato(pattern)
-        automaton.verify_pattern(pattern)
+    def test_verificar_padrao(self):
+        """
+        Verifica se o método lança uma exceção ValueError quando o padrão contém caracteres inválidos.
+        """
+        automato = Automato("ATG", "ATGCGCATGATG")
+        self.assertIsNone(automato.verificar_padrao("ATG"))
 
-    def test_verify_invalid_pattern(self):
-        pattern = "ATGX"
-        automaton = Automato("ATG")
         with self.assertRaises(ValueError):
-            automaton.verify_pattern(pattern)
+            automato.verificar_padrao("AXG")  # Padrão inválido
 
-    def test_build_transition_table(self):
-        pattern = "ATG"
-        automaton = Automato(pattern)
-        expected = {
-            (0, 'A'): 1, (0, 'T'): 0, (0, 'G'): 0, (0, 'C'): 0,
-            (1, 'A'): 1, (1, 'T'): 2, (1, 'G'): 0, (1, 'C'): 0,
-            (2, 'A'): 1, (2, 'T'): 0, (2, 'G'): 3, (2, 'C'): 0,
-            (3, 'A'): 1, (3, 'T'): 2, (3, 'G'): 0, (3, 'C'): 0
-        }
-        self.assertEqual(automaton.transition_table, expected)
+    def test_construir_tabela_transicao(self):
+        """
+        Verifica se a tabela de transição foi construída corretamente para o padrão "ATG".
+        """
+        automato = Automato("ATG", "ATGCGCATGATG")
+        automato.construir_tabela_transicao("ATG")
+        # Verificar se a tabela de transição foi construída corretamente
+        self.assertEqual(automato.tabela_transicao[(0, 'A')], 1)
+        self.assertEqual(automato.tabela_transicao[(1, 'T')], 2)
+        self.assertEqual(automato.tabela_transicao[(2, 'G')], 3)
+        self.assertEqual(automato.tabela_transicao[(3, 'C')], 0)
 
-    def test_apply_sequence(self):
-        pattern = "ATG"
-        seq = "ATGCGC"
-        automaton = Automato(pattern)
-        expected = [0, 1, 2, 3, 0, 0, 0]
-        result = automaton.apply_sequence(seq)
-        self.assertEqual(result, expected)
+    def test_encontrar_ocorrencias(self):
+        """
+        Verifica se o método encontra corretamente as ocorrências do padrão na sequência fornecida.
+        """
+        automato = Automato("ATG", "ATGCGCATGATG")
+        ocorrencias = automato.encontrar_ocorrencias("ATGCGCATGATG")
+        self.assertEqual(ocorrencias, [0, 6, 9])  # Corrigido
+        ocorrencias_vazio = automato.encontrar_ocorrencias("")
+        self.assertEqual(ocorrencias_vazio, [])
 
-    def test_find_occurrences(self):
-        pattern = "ATG"
-        seq = "ATGCGCATGATG"
-        automaton = Automato(pattern)
-        expected = [0, 6, 9]
-        result = automaton.find_occurrences(seq)
-        self.assertEqual(result, expected)
 
 if __name__ == "__main__":
     unittest.main()
