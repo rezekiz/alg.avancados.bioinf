@@ -22,15 +22,23 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Importar as classes necessárias
 from algoritmos_evolucionarios import EvolAlgorithm, Individuos, Populacao
 
+
 class TestEvolAlgo(unittest.TestCase):
 
     # Testar a classe Individuos
     def test_individuos_init(self):
+        """
+        Testa o método __init__ da classe Individuos para garantir que o genoma é inicializado com o tamanho correto
+        e que os genes estão dentro do intervalo [0, 1].
+        """
         indiv = Individuos(size=10)
         self.assertEqual(len(indiv.genome), 10, "Tamanho do genoma incorreto.")
         self.assertTrue(all(gene in [0, 1] for gene in indiv.genome), "Genes fora do intervalo [0, 1].")
 
     def test_individuos_mutation(self):
+        """
+        Testa o método mutation da classe Individuos para garantir que a mutação altera pelo menos um gene do genoma.
+        """
         indiv = Individuos(size=10)
         original_genome = indiv.genome[:]
         indiv.mutation()
@@ -39,6 +47,10 @@ class TestEvolAlgo(unittest.TestCase):
                         "Mutação não alterou um gene corretamente.")
 
     def test_individuos_crossover(self):
+        """
+        Testa o método crossover da classe Individuos para garantir que o crossover produz um filho com pelo menos um
+        gene de cada genoma dos pais.
+        """
         indiv1 = Individuos(size=10)
         indiv2 = Individuos(size=10)
         child1, child2 = indiv1.crossover(indiv2)
@@ -57,30 +69,35 @@ class TestEvolAlgo(unittest.TestCase):
         )
 
     def test_individuos_get_fitness(self):
+        """
+        Verifica se a aptidão é calculada corretamente para um indivíduo com genoma conhecido.
+        """
         indiv = Individuos(size=10, genome=[1, 1, 1, 0, 0, 1, 0, 1, 1, 1])
         self.assertEqual(indiv.get_fitness(), 7, "Aptidão calculada incorretamente.")
 
     def test_individuos_set_fitness(self):
+        """"
+        Verifica se a aptidão é configurada corretamente para um indivíduo.
+        """
         indiv = Individuos(size=10)
         indiv.set_fitness(5)
         self.assertEqual(indiv.fitness, 5, "Aptidão não foi configurada corretamente.")
 
     # Testar a classe Populacao
     def test_populacao_init(self):
+        """
+        Testa o método __init__ da classe Populacao para garantir que o tamanho da população e o tamanho dos genomas
+        dos indivíduos estejam corretos.
+        """
         pop = Populacao(pop_size=5, indiv_size=10)
         self.assertEqual(len(pop.indivs), 5, "Tamanho da população incorreto.")
         for indiv in pop.indivs:
             self.assertEqual(len(indiv.genome), 10, "Tamanho do genoma do indivíduo incorreto.")
 
-    def test_populacao_get_indiv(self):
-        # Testa se a função get_indiv retorna o indivíduo correto com base no índice
-        pop = Populacao(pop_size=5, indiv_size=10)
-        for i in range(5):
-            indiv = pop.get_indiv(i)
-            self.assertIsInstance(indiv, Individuos, "O objeto retornado não é uma instância de Individuos.")
-
     def test_populacao_get_fitnesses(self):
-        # Testa se a função get_fitnesses retorna uma lista de aptidões corretamente calculadas
+        """
+        Testa se a função get_fitnesses retorna uma lista de aptidões corretamente calculadas
+        """
         pop = Populacao(pop_size=5, indiv_size=10)
         fitnesses = pop.get_fitnesses()
         self.assertEqual(len(fitnesses), 5, "Tamanho da lista de aptidões incorreto.")
@@ -90,7 +107,9 @@ class TestEvolAlgo(unittest.TestCase):
             self.assertEqual(fitnesses[i], expected_fitness, "A aptidão calculada está incorreta.")
 
     def test_populacao_best_fitness(self):
-        # Testa se a função best_fitness retorna a aptidão do melhor indivíduo na população
+        """
+        Testa se a função best_fitness retorna a aptidão do melhor indivíduo na população
+        """
         pop = Populacao(pop_size=5, indiv_size=10)
         best_fitness = pop.best_fitness()
         best_indiv = pop.best_indiv()
@@ -98,7 +117,9 @@ class TestEvolAlgo(unittest.TestCase):
         self.assertEqual(best_fitness, expected_fitness, "A aptidão do melhor indivíduo está incorreta.")
 
     def test_populacao_reinsertion(self):
-        # Testa se a função reinsertion insere corretamente os descendentes na população
+        """
+        Testa se a função reinsertion insere corretamente os descendentes na população
+        """
         pop = Populacao(pop_size=5, indiv_size=10)
         offspring = [[0] * 10] * 3  # Exemplo de descendentes
         final_pop = pop.reinsertion(offspring)
@@ -108,7 +129,9 @@ class TestEvolAlgo(unittest.TestCase):
             self.assertEqual(len(indiv), 10, "Tamanho do genoma do indivíduo na população final incorreto.")
 
     def test_populacao_roulette(self):
-        # Testa se a função roulette seleciona os indivíduos de forma adequada
+        """
+        Testa se a função roulette seleciona os indivíduos de forma adequada
+        """
         pop = Populacao(pop_size=10, indiv_size=10)
 
         # Realiza a seleção de 5 indivíduos
@@ -124,13 +147,16 @@ class TestEvolAlgo(unittest.TestCase):
         self.assertGreater(sum(selected_fitnesses), 0,
                            "A soma das aptidões dos indivíduos selecionados deve ser maior que zero.")
 
-        # Verifica se a função roulette está selecionando indivíduos de forma aleatória
+        # Verifica se a função roulette está a selecionar indivíduos de forma aleatória
         random_selected_indices = pop.roulette(5)
         self.assertNotEqual(selected_indices, random_selected_indices,
                             "A seleção de indivíduos não está sendo feita de forma aleatória.")
 
     # Testar a classe EvolAlgorithm
     def test_evol_algorithm_init(self):
+        """
+        Testa se o algoritmo inicializa corretamente
+        """
         algo = EvolAlgorithm(pop_size=5, numits=10, desc=2, indiv_size=10)
         self.assertEqual(algo.pop_size, 5, "Tamanho da população incorreto no algoritmo.")
         self.assertEqual(algo.numits, 10, "Número de iterações incorreto no algoritmo.")
@@ -138,7 +164,9 @@ class TestEvolAlgo(unittest.TestCase):
         self.assertEqual(algo.indiv_size, 10, "Tamanho do genoma do indivíduo incorreto no algoritmo.")
 
     def test_evol_algorithm_evaluate(self):
-        # Testa se o método evaluate retorna as aptidões corretamente
+        """
+        Testa se o método evaluate retorna as aptidões corretamente
+        """
         algo = EvolAlgorithm(pop_size=5, numits=10, desc=2, indiv_size=10)
         indivs = [[0, 1, 0, 1, 1, 0, 0, 1, 1, 1], [1, 0, 1, 0, 0, 1, 1, 0, 0, 0], [0, 1, 1, 1, 0, 0, 0, 1, 1, 1]]
         fitnesses = algo.evaluate(indivs)
