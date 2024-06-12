@@ -1,6 +1,7 @@
-from AlgEvol import EvolAlgorithm
+
 from Ind import Individuos
 from Pop import Populacao
+from AlgEvol import EvolAlgorithm
 
 if __name__ == "__main__":
 
@@ -87,8 +88,7 @@ if __name__ == "__main__":
     evol = EvolAlgorithm(pop_size, numits, desc, indiv_size)
     print("Avaliação do fit dos indivíduos:",evol.evaluate([[0, 0, 1, 0, 0], [1, 1, 0, 1, 1], [0, 0, 0, 1, 0]]))
 
-#    print("Verificação da iteração dos indivíduos:",evol.iteration())
-
+    # Executa o algoritmo
     print("Algoritmo a correr:", evol.run())
 
 

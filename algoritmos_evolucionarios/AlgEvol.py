@@ -1,4 +1,4 @@
-from .Pop import Populacao
+from Pop import Populacao
 
 class EvolAlgorithm:
 
