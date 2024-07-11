@@ -1,37 +1,26 @@
-## Package
+**Repository Description:**
 
-This project aims to create a package with various modules covering different topics in Analysis of Algorithms in Biology (AAB). Each topic will be addressed in a separate module, providing clear organization and facilitating code development and maintenance.
+This repository implements several algorithms used in Bioinformatics in a simple yet functional manner.
 
-### Modules
+### Demonstrated Algorithms in this Repository
 
-1. **Motifs**
-   - Implementation of the Gibbs Sampling algorithm for identifying motifs in biological sequences.
+1. **Gibbs' Sampling**
+   - A probabilistic algorithm for motif finding and sequence alignment. [Learn more](https://en.wikipedia.org/wiki/Gibbs_sampling)
 
-2. **Evolutionary Computation**
-   - Development of evolutionary computation algorithms to solve problems related to computational biology.
+2. **Evolutionary Algorithms**
+   - Optimization algorithms based on natural selection principles. [Learn more](https://en.wikipedia.org/wiki/Evolutionary_algorithm)
 
-3. **Pattern Matching**
-   - Implementations of pattern matching algorithms, including Finite Automata, Tries, and Suffix Trees.
+3. **Finite Automata**
+   - Computational models for recognizing patterns within input sequences. [Learn more](https://en.wikipedia.org/wiki/Finite_automaton)
 
-4. **Alignments Against References (BWTs)**
-   - Module dedicated to performing alignments of biological sequences using the Burrows-Wheeler Transform (BWT).
+4. **Burrow-Wheeler Transform (BWT)**
+   - A data transformation algorithm used in data compression. [Learn more](https://en.wikipedia.org/wiki/Burrows%E2%80%93Wheeler_transform)
 
-5. **Graphs**
-   - Functionality for manipulation and analysis of graphs in biological contexts.
+5. **Tries**
+   - A tree-like data structure for storing dynamic sets of strings. [Learn more](https://en.wikipedia.org/wiki/Trie)
 
-6. **Biological Networks**
-   - Implementations for analysis and manipulation of biological networks, including network analysis algorithms and visualization methods.
+6. **Graphs**
+   - Structures for modeling pairwise relationships between objects, useful in biological networks. [Learn more](https://en.wikipedia.org/wiki/Graph_theory)
 
 7. **Genome Assembly**
-   - Module focused on the process of genome assembly, covering relevant techniques and algorithms for this process.
-
-### Contributions
-
-# Algoritmos Avançados em Bioinformática
-
-Group 4:
-
-- Carlos Gomes (PG51681)
-- Ian Alves (PG51682)
-- Mariana Oliveira (PG52648) 
-- Rui Sousa (PG21019)
+   - Methods for reconstructing a genome from fragments of DNA sequences. [Learn more](https://en.wikipedia.org/wiki/Genome_assembly)
